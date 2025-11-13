@@ -8,9 +8,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- * DTO pour créer un produit fini (US18)
- */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

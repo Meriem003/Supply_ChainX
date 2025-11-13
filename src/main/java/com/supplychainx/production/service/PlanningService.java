@@ -22,20 +22,14 @@ public class PlanningService {
     private final ProductRepository productRepository;
     private final BillOfMaterialRepository billOfMaterialRepository;
     
-    /**
-     * US28 : Vérifier la disponibilité des matières premières avant de lancer un ordre
-     */
     @Transactional(readOnly = true)
     public ProductionAvailabilityResponseDTO checkMaterialAvailability(Long productId, Integer quantity) {
-        // Vérifier que le produit existe
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Produit non trouvé avec l'ID: " + productId));
         
-        // Récupérer la liste des matières nécessaires (BOM)
         List<BillOfMaterial> bom = billOfMaterialRepository.findByProduct(product);
         
-        // Vérifier la disponibilité de chaque matière
         List<MaterialAvailabilityDTO> materialsStatus = new ArrayList<>();
         boolean canProduce = true;
         
@@ -66,17 +60,13 @@ public class PlanningService {
         );
     }
     
-    /**
-     * US29 : Calculer le temps estimé de production
-     */
+
     @Transactional(readOnly = true)
     public ProductionTimeResponseDTO calculateProductionTime(Long productId, Integer quantity) {
-        // Vérifier que le produit existe
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Produit non trouvé avec l'ID: " + productId));
         
-        // Calculer le temps total
         Integer unitProductionTime = product.getProductionTime();
         Integer totalProductionTime = unitProductionTime * quantity;
         

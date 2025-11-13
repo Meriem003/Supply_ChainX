@@ -8,9 +8,7 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 import java.util.List;
 
-/**
- * DTO pour créer ou modifier une commande d'approvisionnement
- */
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

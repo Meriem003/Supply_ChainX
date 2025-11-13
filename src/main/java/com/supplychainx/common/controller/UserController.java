@@ -14,9 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-/**
- * Controller REST pour gérer les utilisateurs
- */
+
 @RestController
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
@@ -25,9 +23,7 @@ public class UserController {
 
     private final UserService userService;
 
-    /**
-     * US1: En tant qu'administrateur, je veux créer un compte utilisateur avec un rôle spécifique
-     */
+
     @PostMapping
     @RequiresRole(UserRole.ADMIN)
     @Operation(summary = "Créer un utilisateur", description = "Permet à un admin de créer un nouveau compte utilisateur avec un rôle spécifique")
@@ -36,9 +32,6 @@ public class UserController {
         return new ResponseEntity<>(user, HttpStatus.CREATED);
     }
 
-    /**
-     * US2: En tant qu'administrateur, je veux modifier le rôle d'un utilisateur existant
-     */
     @PutMapping("/{userId}/role")
     @RequiresRole(UserRole.ADMIN)
     @Operation(summary = "Modifier le rôle d'un utilisateur", description = "Permet à un admin de modifier le rôle d'un utilisateur existant")

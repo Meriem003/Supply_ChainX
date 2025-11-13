@@ -15,11 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-/**
- * Controller REST pour gérer les nomenclatures (BOM - Bill of Materials)
- * Permet d'associer des matières premières aux produits finis
- * Support pour US28: Vérification de disponibilité des matières avant production
- */
+
 @RestController
 @RequestMapping("/api/bom")
 @RequiredArgsConstructor
@@ -28,10 +24,7 @@ public class BillOfMaterialController {
 
     private final BillOfMaterialService billOfMaterialService;
 
-    /**
-     * Ajouter une ligne de nomenclature (associer une matière à un produit)
-     * Rôle: CHEF_PRODUCTION
-     */
+
     @PostMapping
     @RequiresRole(UserRole.CHEF_PRODUCTION)
     @Operation(summary = "Créer une nomenclature", 
@@ -42,10 +35,6 @@ public class BillOfMaterialController {
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
-    /**
-     * Modifier une ligne de nomenclature existante
-     * Rôle: CHEF_PRODUCTION
-     */
     @PutMapping("/{id}")
     @RequiresRole(UserRole.CHEF_PRODUCTION)
     @Operation(summary = "Modifier une nomenclature", 
@@ -57,10 +46,6 @@ public class BillOfMaterialController {
         return ResponseEntity.ok(updated);
     }
 
-    /**
-     * Supprimer une ligne de nomenclature
-     * Rôle: CHEF_PRODUCTION
-     */
     @DeleteMapping("/{id}")
     @RequiresRole(UserRole.CHEF_PRODUCTION)
     @Operation(summary = "Supprimer une nomenclature", 
@@ -70,10 +55,6 @@ public class BillOfMaterialController {
         return ResponseEntity.noContent().build();
     }
 
-    /**
-     * Consulter toutes les nomenclatures
-     * Rôle: PLANIFICATEUR ou SUPERVISEUR_PRODUCTION
-     */
     @GetMapping
     @RequiresRole({UserRole.PLANIFICATEUR, UserRole.SUPERVISEUR_PRODUCTION})
     @Operation(summary = "Consulter toutes les nomenclatures", 
@@ -82,12 +63,6 @@ public class BillOfMaterialController {
         List<BillOfMaterialResponseDTO> boms = billOfMaterialService.getAllBillOfMaterials();
         return ResponseEntity.ok(boms);
     }
-
-    /**
-     * Consulter la nomenclature (BOM) d'un produit spécifique
-     * Support pour US28: Permet au planificateur de voir les matières nécessaires
-     * Rôle: PLANIFICATEUR ou SUPERVISEUR_PRODUCTION
-     */
     @GetMapping("/product/{productId}")
     @RequiresRole({UserRole.PLANIFICATEUR, UserRole.SUPERVISEUR_PRODUCTION})
     @Operation(summary = "Consulter la BOM d'un produit", 

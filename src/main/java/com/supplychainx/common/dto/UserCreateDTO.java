@@ -8,9 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- * DTO pour créer un nouvel utilisateur
- */
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

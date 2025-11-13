@@ -12,6 +12,6 @@ public class ProductionTimeResponseDTO {
     private Long productId;
     private String productName;
     private Integer quantity;
-    private Integer unitProductionTime; // en heures
-    private Integer totalProductionTime; // en heures
+    private Integer unitProductionTime;
+    private Integer totalProductionTime;
 }

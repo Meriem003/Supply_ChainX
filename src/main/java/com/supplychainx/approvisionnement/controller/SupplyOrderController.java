@@ -16,13 +16,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-/**
- * Controller REST pour gérer les commandes d'approvisionnement
- * US13: Créer une commande
- * US14: Modifier une commande
- * US15: Supprimer une commande
- * US16: Consulter toutes les commandes
- */
 @RestController
 @RequestMapping("/api/supply-orders")
 @RequiredArgsConstructor
@@ -31,10 +24,6 @@ public class SupplyOrderController {
 
     private final SupplyOrderService supplyOrderService;
 
-    /**
-     * US13: Créer une commande d'approvisionnement
-     * Rôle: RESPONSABLE_ACHATS
-     */
     @PostMapping
     @RequiresRole(UserRole.RESPONSABLE_ACHATS)
     @Operation(summary = "Créer une commande d'approvisionnement", 
@@ -44,10 +33,6 @@ public class SupplyOrderController {
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
-    /**
-     * US14: Modifier une commande existante
-     * Rôle: RESPONSABLE_ACHATS
-     */
     @PutMapping("/{id}")
     @RequiresRole(UserRole.RESPONSABLE_ACHATS)
     @Operation(summary = "Modifier une commande d'approvisionnement", 
@@ -59,10 +44,6 @@ public class SupplyOrderController {
         return ResponseEntity.ok(updated);
     }
 
-    /**
-     * US15: Supprimer une commande si elle n'a pas été livrée
-     * Rôle: RESPONSABLE_ACHATS
-     */
     @DeleteMapping("/{id}")
     @RequiresRole(UserRole.RESPONSABLE_ACHATS)
     @Operation(summary = "Supprimer une commande d'approvisionnement", 
@@ -72,10 +53,6 @@ public class SupplyOrderController {
         return ResponseEntity.noContent().build();
     }
 
-    /**
-     * US16: Consulter toutes les commandes d'approvisionnement
-     * Rôle: SUPERVISEUR_LOGISTIQUE
-     */
     @GetMapping
     @RequiresRole(UserRole.SUPERVISEUR_LOGISTIQUE)
     @Operation(summary = "Consulter toutes les commandes", 
@@ -85,10 +62,6 @@ public class SupplyOrderController {
         return ResponseEntity.ok(orders);
     }
 
-    /**
-     * US17: Suivre le statut des commandes (filtrage par statut)
-     * Rôle: SUPERVISEUR_LOGISTIQUE
-     */
     @GetMapping("/status/{status}")
     @RequiresRole(UserRole.SUPERVISEUR_LOGISTIQUE)
     @Operation(summary = "Filtrer les commandes par statut", 

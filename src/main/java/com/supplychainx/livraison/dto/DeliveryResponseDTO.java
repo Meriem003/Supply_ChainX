@@ -6,9 +6,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
-/**
- * DTO pour retourner les informations d'une livraison
- */
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

@@ -26,10 +26,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-/**
- * Tests unitaires pour RawMaterialService
- * Teste les US8, US9, US10, US11, US12
- */
 @ExtendWith(MockitoExtension.class)
 class RawMaterialServiceTest {
 
@@ -49,7 +45,6 @@ class RawMaterialServiceTest {
 
     @BeforeEach
     void setUp() {
-        // Initialisation de la matière première de test
         rawMaterial = new RawMaterial();
         rawMaterial.setIdMaterial(1L);
         rawMaterial.setName("Acier Inoxydable");
@@ -58,21 +53,18 @@ class RawMaterialServiceTest {
         rawMaterial.setUnit("kg");
         rawMaterial.setSuppliers(new ArrayList<>());
 
-        // DTO de création
         createDTO = new RawMaterialCreateDTO();
         createDTO.setName("Aluminium");
         createDTO.setStock(150);
         createDTO.setStockMin(30);
         createDTO.setUnit("kg");
 
-        // DTO de mise à jour
         updateDTO = new RawMaterialUpdateDTO();
         updateDTO.setName("Acier Modifié");
         updateDTO.setStock(120);
         updateDTO.setStockMin(25);
         updateDTO.setUnit("kg");
 
-        // DTO de réponse
         responseDTO = new RawMaterialResponseDTO();
         responseDTO.setIdMaterial(1L);
         responseDTO.setName("Acier Inoxydable");
@@ -81,19 +73,14 @@ class RawMaterialServiceTest {
         responseDTO.setUnit("kg");
     }
 
-    // ==================== US8: Créer une matière première ====================
-    
     @Test
-    @DisplayName("US8 - Créer une matière première avec succès")
+    @DisplayName("Créer une matière première avec succès")
     void testCreateRawMaterial_Success() {
-        // Given
         when(rawMaterialRepository.save(any(RawMaterial.class))).thenReturn(rawMaterial);
         when(rawMaterialMapper.toResponseDTO(rawMaterial)).thenReturn(responseDTO);
 
-        // When
         RawMaterialResponseDTO result = rawMaterialService.createRawMaterial(createDTO);
 
-        // Then
         assertNotNull(result);
         assertEquals(responseDTO.getName(), result.getName());
         verify(rawMaterialRepository, times(1)).save(any(RawMaterial.class));
@@ -101,16 +88,13 @@ class RawMaterialServiceTest {
     }
 
     @Test
-    @DisplayName("US8 - Créer une matière première avec toutes les informations")
+    @DisplayName("Créer une matière première avec toutes les informations")
     void testCreateRawMaterial_WithAllRequiredFields() {
-        // Given
         when(rawMaterialRepository.save(any(RawMaterial.class))).thenReturn(rawMaterial);
         when(rawMaterialMapper.toResponseDTO(rawMaterial)).thenReturn(responseDTO);
 
-        // When
         RawMaterialResponseDTO result = rawMaterialService.createRawMaterial(createDTO);
 
-        // Then
         assertNotNull(result);
         assertNotNull(result.getName());
         assertNotNull(result.getStock());
@@ -119,20 +103,15 @@ class RawMaterialServiceTest {
         verify(rawMaterialRepository, times(1)).save(any(RawMaterial.class));
     }
 
-    // ==================== US9: Modifier une matière première ====================
-    
     @Test
-    @DisplayName("US9 - Modifier une matière première existante avec succès")
+    @DisplayName("Modifier une matière première existante avec succès")
     void testUpdateRawMaterial_Success() {
-        // Given
         when(rawMaterialRepository.findById(1L)).thenReturn(Optional.of(rawMaterial));
         when(rawMaterialRepository.save(any(RawMaterial.class))).thenReturn(rawMaterial);
         when(rawMaterialMapper.toResponseDTO(rawMaterial)).thenReturn(responseDTO);
 
-        // When
         RawMaterialResponseDTO result = rawMaterialService.updateRawMaterial(1L, updateDTO);
 
-        // Then
         assertNotNull(result);
         verify(rawMaterialRepository, times(1)).findById(1L);
         verify(rawMaterialRepository, times(1)).save(rawMaterial);
@@ -140,12 +119,10 @@ class RawMaterialServiceTest {
     }
 
     @Test
-    @DisplayName("US9 - Modifier une matière première inexistante doit lever une exception")
+    @DisplayName("Modifier une matière première inexistante doit lever une exception")
     void testUpdateRawMaterial_NotFound() {
-        // Given
         when(rawMaterialRepository.findById(999L)).thenReturn(Optional.empty());
 
-        // When & Then
         assertThrows(ResourceNotFoundException.class, () -> {
             rawMaterialService.updateRawMaterial(999L, updateDTO);
         });
@@ -154,12 +131,11 @@ class RawMaterialServiceTest {
     }
 
     @Test
-    @DisplayName("US9 - Modifier le stock d'une matière première")
+    @DisplayName("Modifier le stock d'une matière première")
     void testUpdateRawMaterial_UpdateStock() {
-        // Given
         RawMaterialUpdateDTO stockUpdateDTO = new RawMaterialUpdateDTO();
         stockUpdateDTO.setName("Acier Inoxydable");
-        stockUpdateDTO.setStock(200); // Nouveau stock
+        stockUpdateDTO.setStock(200); 
         stockUpdateDTO.setStockMin(20);
         stockUpdateDTO.setUnit("kg");
 
@@ -167,35 +143,27 @@ class RawMaterialServiceTest {
         when(rawMaterialRepository.save(any(RawMaterial.class))).thenReturn(rawMaterial);
         when(rawMaterialMapper.toResponseDTO(rawMaterial)).thenReturn(responseDTO);
 
-        // When
         RawMaterialResponseDTO result = rawMaterialService.updateRawMaterial(1L, stockUpdateDTO);
 
-        // Then
         assertNotNull(result);
         verify(rawMaterialRepository, times(1)).save(rawMaterial);
     }
 
-    // ==================== US10: Supprimer une matière première ====================
-    
     @Test
-    @DisplayName("US10 - Supprimer une matière première sans fournisseurs")
+    @DisplayName("Supprimer une matière première sans fournisseurs")
     void testDeleteRawMaterial_WithoutSuppliers_Success() {
-        // Given
         when(rawMaterialRepository.findById(1L)).thenReturn(Optional.of(rawMaterial));
         doNothing().when(rawMaterialRepository).delete(rawMaterial);
 
-        // When
         rawMaterialService.deleteRawMaterial(1L);
 
-        // Then
         verify(rawMaterialRepository, times(1)).findById(1L);
         verify(rawMaterialRepository, times(1)).delete(rawMaterial);
     }
 
     @Test
-    @DisplayName("US10 - Supprimer une matière première avec fournisseurs doit échouer")
+    @DisplayName("Supprimer une matière première avec fournisseurs doit échouer")
     void testDeleteRawMaterial_WithSuppliers_ShouldFail() {
-        // Given
         Supplier supplier = new Supplier();
         supplier.setIdSupplier(1L);
         supplier.setName("Fournisseur Test");
@@ -203,7 +171,6 @@ class RawMaterialServiceTest {
 
         when(rawMaterialRepository.findById(1L)).thenReturn(Optional.of(rawMaterial));
 
-        // When & Then
         assertThrows(BusinessRuleException.class, () -> {
             rawMaterialService.deleteRawMaterial(1L);
         });
@@ -212,24 +179,18 @@ class RawMaterialServiceTest {
     }
 
     @Test
-    @DisplayName("US10 - Supprimer une matière première inexistante doit lever une exception")
+    @DisplayName("Supprimer une matière première inexistante doit lever une exception")
     void testDeleteRawMaterial_NotFound() {
-        // Given
         when(rawMaterialRepository.findById(999L)).thenReturn(Optional.empty());
-
-        // When & Then
         assertThrows(ResourceNotFoundException.class, () -> {
             rawMaterialService.deleteRawMaterial(999L);
         });
         verify(rawMaterialRepository, never()).delete(any(RawMaterial.class));
     }
 
-    // ==================== US11: Consulter toutes les matières premières ====================
-    
     @Test
-    @DisplayName("US11 - Récupérer la liste de toutes les matières premières")
+    @DisplayName("Récupérer la liste de toutes les matières premières")
     void testGetAllRawMaterials_Success() {
-        // Given
         RawMaterial material2 = new RawMaterial();
         material2.setIdMaterial(2L);
         material2.setName("Cuivre");
@@ -248,10 +209,8 @@ class RawMaterialServiceTest {
         when(rawMaterialMapper.toResponseDTO(rawMaterial)).thenReturn(responseDTO);
         when(rawMaterialMapper.toResponseDTO(material2)).thenReturn(responseDTO2);
 
-        // When
         List<RawMaterialResponseDTO> result = rawMaterialService.getAllRawMaterials();
 
-        // Then
         assertNotNull(result);
         assertEquals(2, result.size());
         verify(rawMaterialRepository, times(1)).findAll();
@@ -259,30 +218,23 @@ class RawMaterialServiceTest {
     }
 
     @Test
-    @DisplayName("US11 - Récupérer une liste vide si aucune matière première")
+    @DisplayName("Récupérer une liste vide si aucune matière première")
     void testGetAllRawMaterials_EmptyList() {
-        // Given
         when(rawMaterialRepository.findAll()).thenReturn(new ArrayList<>());
-
-        // When
         List<RawMaterialResponseDTO> result = rawMaterialService.getAllRawMaterials();
 
-        // Then
         assertNotNull(result);
         assertTrue(result.isEmpty());
         verify(rawMaterialRepository, times(1)).findAll();
     }
 
-    // ==================== US12: Filtrer les matières premières en stock critique ====================
-    
     @Test
-    @DisplayName("US12 - Récupérer les matières premières en stock critique")
+    @DisplayName("Récupérer les matières premières en stock critique")
     void testGetCriticalStockMaterials_Success() {
-        // Given
         RawMaterial criticalMaterial = new RawMaterial();
         criticalMaterial.setIdMaterial(2L);
         criticalMaterial.setName("Matériau Critique");
-        criticalMaterial.setStock(10); // Stock inférieur au minimum
+        criticalMaterial.setStock(10);
         criticalMaterial.setStockMin(20);
         criticalMaterial.setUnit("kg");
         
@@ -297,10 +249,8 @@ class RawMaterialServiceTest {
         when(rawMaterialRepository.findMaterialsBelowMinStock()).thenReturn(criticalMaterials);
         when(rawMaterialMapper.toResponseDTO(criticalMaterial)).thenReturn(criticalResponseDTO);
 
-        // When
         List<RawMaterialResponseDTO> result = rawMaterialService.getCriticalStockMaterials();
 
-        // Then
         assertNotNull(result);
         assertEquals(1, result.size());
         assertEquals("Matériau Critique", result.get(0).getName());
@@ -310,24 +260,19 @@ class RawMaterialServiceTest {
     }
 
     @Test
-    @DisplayName("US12 - Aucune matière première en stock critique")
+    @DisplayName("Aucune matière première en stock critique")
     void testGetCriticalStockMaterials_NoResults() {
-        // Given
         when(rawMaterialRepository.findMaterialsBelowMinStock()).thenReturn(new ArrayList<>());
 
-        // When
         List<RawMaterialResponseDTO> result = rawMaterialService.getCriticalStockMaterials();
-
-        // Then
         assertNotNull(result);
         assertTrue(result.isEmpty());
         verify(rawMaterialRepository, times(1)).findMaterialsBelowMinStock();
     }
 
     @Test
-    @DisplayName("US12 - Plusieurs matières premières en stock critique")
+    @DisplayName("Plusieurs matières premières en stock critique")
     void testGetCriticalStockMaterials_MultipleResults() {
-        // Given
         RawMaterial critical1 = new RawMaterial();
         critical1.setIdMaterial(1L);
         critical1.setName("Matériau 1");
@@ -354,10 +299,8 @@ class RawMaterialServiceTest {
         when(rawMaterialMapper.toResponseDTO(critical1)).thenReturn(response1);
         when(rawMaterialMapper.toResponseDTO(critical2)).thenReturn(response2);
 
-        // When
         List<RawMaterialResponseDTO> result = rawMaterialService.getCriticalStockMaterials();
 
-        // Then
         assertNotNull(result);
         assertEquals(2, result.size());
         verify(rawMaterialRepository, times(1)).findMaterialsBelowMinStock();

@@ -7,9 +7,7 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 import java.util.List;
 
-/**
- * DTO pour retourner les informations d'une commande d'approvisionnement
- */
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

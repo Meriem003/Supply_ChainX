@@ -8,9 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- * DTO pour modifier un produit fini (US19)
- */
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

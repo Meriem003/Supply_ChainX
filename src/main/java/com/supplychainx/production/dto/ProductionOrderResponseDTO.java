@@ -6,9 +6,6 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
-/**
- * DTO pour retourner les informations d'un ordre de production
- */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

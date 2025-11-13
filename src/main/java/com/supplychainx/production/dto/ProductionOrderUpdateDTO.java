@@ -8,9 +8,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
-/**
- * DTO pour modifier un ordre de production (US24)
- */
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

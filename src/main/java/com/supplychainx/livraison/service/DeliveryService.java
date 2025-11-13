@@ -26,18 +26,13 @@ public class DeliveryService {
     private final OrderMapper orderMapper;
     private final CustomerMapper customerMapper;
     private final ProductMapper productMapper;
-    
-    /**
-     * US40 : Créer une livraison pour une commande et calculer son coût total
-     */
+
     @Transactional
     public DeliveryResponseDTO createDelivery(DeliveryRequestDTO dto) {
-        // Vérifier que la commande existe
         Order order = orderRepository.findById(dto.getOrderId())
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Commande non trouvée avec l'ID: " + dto.getOrderId()));
         
-        // Créer la livraison
         Delivery delivery = new Delivery();
         delivery.setOrder(order);
         delivery.setVehicle(dto.getVehicle());
@@ -45,7 +40,6 @@ public class DeliveryService {
         delivery.setStatus(DeliveryStatus.valueOf(dto.getStatus()));
         delivery.setDeliveryDate(dto.getDeliveryDate());
         
-        // Calculer le coût total de la livraison
         Double calculatedCost = calculateDeliveryCost(order, dto.getCost());
         delivery.setCost(calculatedCost);
         
@@ -53,21 +47,15 @@ public class DeliveryService {
         return deliveryMapper.toResponseDTO(savedDelivery);
     }
     
-    /**
-     * Calculer le coût total de la livraison
-     * Formule simple : coût de base fourni (ou coût du produit * quantité si non fourni)
-     */
+
     private Double calculateDeliveryCost(Order order, Double baseCost) {
         if (baseCost != null && baseCost > 0) {
-            // Si un coût est fourni, on l'utilise
             return baseCost;
         }
-        
-        // Sinon, on calcule un coût basé sur le produit et la quantité
-        // Coût = coût unitaire du produit × quantité × facteur de livraison (1.1 pour 10% de frais)
+
         Double productCost = order.getProduct().getCost();
         Integer quantity = order.getQuantity();
-        Double deliveryFactor = 1.1; // 10% de frais de livraison
+        Double deliveryFactor = 1.1;
         
         return productCost * quantity * deliveryFactor;
     }

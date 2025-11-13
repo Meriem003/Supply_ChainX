@@ -5,9 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- * DTO pour créer ou modifier un client
- */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

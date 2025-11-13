@@ -10,37 +10,24 @@ import org.springframework.context.annotation.Configuration;
 
 import java.util.List;
 
-/**
- * Configuration pour la documentation Swagger/OpenAPI de l'application SupplyChainX.
- * 
- * Cette configuration définit les informations générales de l'API :
- * - Titre et description
- * - Version
- * - Contact et licence
- * - Serveurs disponibles
- */
 @Configuration
 public class OpenApiConfig {
 
     @Bean
     public OpenAPI supplyChainXOpenAPI() {
-        // Serveur local de développement
         Server devServer = new Server();
         devServer.setUrl("http://localhost:8080");
         devServer.setDescription("Serveur de développement");
 
-        // Informations de contact
         Contact contact = new Contact();
         contact.setEmail("contact@supplychainx.com");
         contact.setName("Équipe SupplyChainX");
         contact.setUrl("https://www.supplychainx.com");
 
-        // Licence
         License mitLicense = new License()
                 .name("MIT License")
                 .url("https://choosealicense.com/licenses/mit/");
 
-        // Informations générales de l'API
         Info info = new Info()
                 .title("SupplyChainX - API de Gestion de la Supply Chain")
                 .version("1.0.0")

@@ -67,6 +67,15 @@ public class SupplierController {
         return ResponseEntity.noContent().build();
     }
 
+
+    @GetMapping("/{id}")
+    @RequiresRole(UserRole.SUPERVISEUR_LOGISTIQUE)
+    @Operation(summary = "Récupérer un fournisseur", description = "Récupère un fournisseur par son ID")
+    public ResponseEntity<SupplierResponseDTO> getSupplierById(@PathVariable Long id) {
+        SupplierResponseDTO supplier = supplierService.getSupplierById(id);
+        return ResponseEntity.ok(supplier);
+    }
+
     /**
      * US6: Consulter la liste de tous les fournisseurs
      * Accessible au SUPERVISEUR_LOGISTIQUE

@@ -23,9 +23,6 @@ public class CustomerController {
     
     private final CustomerService customerService;
     
-    /**
-     * US30 : Ajouter un client avec toutes ses informations
-     */
     @PostMapping
     @RequiresRole(UserRole.GESTIONNAIRE_COMMERCIAL)
     @Operation(summary = "Créer un client",
@@ -34,10 +31,7 @@ public class CustomerController {
         CustomerResponseDTO customer = customerService.createCustomer(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(customer);
     }
-    
-    /**
-     * US31 : Modifier un client existant
-     */
+
     @PutMapping("/{id}")
     @RequiresRole(UserRole.GESTIONNAIRE_COMMERCIAL)
     @Operation(summary = "Modifier un client",
@@ -48,10 +42,7 @@ public class CustomerController {
         CustomerResponseDTO customer = customerService.updateCustomer(id, dto);
         return ResponseEntity.ok(customer);
     }
-    
-    /**
-     * US32 : Supprimer un client (s'il n'a aucune commande active)
-     */
+
     @DeleteMapping("/{id}")
     @RequiresRole(UserRole.GESTIONNAIRE_COMMERCIAL)
     @Operation(summary = "Supprimer un client",
@@ -60,10 +51,7 @@ public class CustomerController {
         customerService.deleteCustomer(id);
         return ResponseEntity.noContent().build();
     }
-    
-    /**
-     * US33 : Consulter la liste de tous les clients
-     */
+
     @GetMapping
     @RequiresRole(UserRole.GESTIONNAIRE_COMMERCIAL)
     @Operation(summary = "Consulter tous les clients",
@@ -72,10 +60,7 @@ public class CustomerController {
         List<CustomerResponseDTO> customers = customerService.getAllCustomers();
         return ResponseEntity.ok(customers);
     }
-    
-    /**
-     * US34 : Rechercher un client par nom
-     */
+
     @GetMapping("/search")
     @RequiresRole(UserRole.GESTIONNAIRE_COMMERCIAL)
     @Operation(summary = "Rechercher un client par nom",

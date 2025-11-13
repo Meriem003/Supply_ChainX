@@ -6,9 +6,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
-/**
- * Classe pour formater les réponses d'erreur de l'API
- */
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

@@ -11,4 +11,6 @@ import java.util.List;
 public interface SupplyOrderRepository extends JpaRepository<SupplyOrder, Long> {
     
     List<SupplyOrder> findByStatus(SupplyOrderStatus status);
+    
+    long countBySupplier_IdSupplierAndStatusIn(Long supplierId, List<SupplyOrderStatus> statuses);
 }

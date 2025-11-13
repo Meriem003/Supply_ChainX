@@ -23,9 +23,7 @@ public class OrderController {
     
     private final OrderService orderService;
     
-    /**
-     * US35 : Créer une commande client
-     */
+
     @PostMapping
     @RequiresRole(UserRole.GESTIONNAIRE_COMMERCIAL)
     @Operation(summary = "Créer une commande client",
@@ -35,9 +33,6 @@ public class OrderController {
         return ResponseEntity.status(HttpStatus.CREATED).body(order);
     }
     
-    /**
-     * US36 : Modifier une commande existante
-     */
     @PutMapping("/{id}")
     @RequiresRole(UserRole.GESTIONNAIRE_COMMERCIAL)
     @Operation(summary = "Modifier une commande",
@@ -49,9 +44,6 @@ public class OrderController {
         return ResponseEntity.ok(order);
     }
     
-    /**
-     * US37 : Annuler une commande si non expédiée
-     */
     @DeleteMapping("/{id}")
     @RequiresRole(UserRole.GESTIONNAIRE_COMMERCIAL)
     @Operation(summary = "Annuler une commande",
@@ -61,9 +53,6 @@ public class OrderController {
         return ResponseEntity.noContent().build();
     }
     
-    /**
-     * US38 : Consulter la liste de toutes les commandes
-     */
     @GetMapping
     @RequiresRole(UserRole.SUPERVISEUR_LIVRAISONS)
     @Operation(summary = "Consulter toutes les commandes",
@@ -73,9 +62,7 @@ public class OrderController {
         return ResponseEntity.ok(orders);
     }
     
-    /**
-     * US39 : Suivre le statut des commandes
-     */
+
     @GetMapping("/status/{status}")
     @RequiresRole(UserRole.SUPERVISEUR_LIVRAISONS)
     @Operation(summary = "Suivre le statut des commandes",

@@ -18,10 +18,7 @@ import org.springframework.web.bind.annotation.*;
 public class PlanningController {
     
     private final PlanningService planningService;
-    
-    /**
-     * US28 : Vérifier la disponibilité des matières premières avant de lancer un ordre
-     */
+
     @GetMapping("/check-availability")
     @RequiresRole(UserRole.PLANIFICATEUR)
     @Operation(summary = "Vérifier la disponibilité des matières",
@@ -33,9 +30,7 @@ public class PlanningController {
         return ResponseEntity.ok(response);
     }
     
-    /**
-     * US29 : Calculer le temps estimé de production
-     */
+
     @GetMapping("/calculate-time")
     @RequiresRole(UserRole.PLANIFICATEUR)
     @Operation(summary = "Calculer le temps de production",

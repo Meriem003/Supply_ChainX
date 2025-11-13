@@ -21,9 +21,7 @@ public class DeliveryController {
     
     private final DeliveryService deliveryService;
     
-    /**
-     * US40 : Créer une livraison pour une commande et calculer son coût total
-     */
+
     @PostMapping
     @RequiresRole(UserRole.RESPONSABLE_LOGISTIQUE)
     @Operation(summary = "Créer une livraison",

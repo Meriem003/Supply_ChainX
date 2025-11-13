@@ -24,9 +24,6 @@ public class CustomerService {
     private final OrderRepository orderRepository;
     private final CustomerMapper customerMapper;
     
-    /**
-     * US30 : Ajouter un client avec toutes ses informations
-     */
     @Transactional
     public CustomerResponseDTO createCustomer(CustomerRequestDTO dto) {
         Customer customer = new Customer();
@@ -38,9 +35,6 @@ public class CustomerService {
         return customerMapper.toResponseDTO(savedCustomer);
     }
     
-    /**
-     * US31 : Modifier un client existant
-     */
     @Transactional
     public CustomerResponseDTO updateCustomer(Long id, CustomerRequestDTO dto) {
         Customer customer = customerRepository.findById(id)
@@ -55,16 +49,12 @@ public class CustomerService {
         return customerMapper.toResponseDTO(updatedCustomer);
     }
     
-    /**
-     * US32 : Supprimer un client (s'il n'a aucune commande active)
-     */
     @Transactional
     public void deleteCustomer(Long id) {
         Customer customer = customerRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Client non trouvé avec l'ID: " + id));
         
-        // Règle métier: vérifier qu'il n'y a pas de commande associée
         List<Order> orders = orderRepository.findByCustomer(customer);
         if (!orders.isEmpty()) {
             throw new BusinessRuleException(
@@ -75,9 +65,6 @@ public class CustomerService {
         customerRepository.delete(customer);
     }
     
-    /**
-     * US33 : Consulter la liste de tous les clients
-     */
     @Transactional(readOnly = true)
     public List<CustomerResponseDTO> getAllCustomers() {
         return customerRepository.findAll().stream()
@@ -85,9 +72,6 @@ public class CustomerService {
                 .collect(Collectors.toList());
     }
     
-    /**
-     * US34 : Rechercher un client par nom
-     */
     @Transactional(readOnly = true)
     public List<CustomerResponseDTO> searchCustomersByName(String name) {
         return customerRepository.findByNameContainingIgnoreCase(name).stream()
