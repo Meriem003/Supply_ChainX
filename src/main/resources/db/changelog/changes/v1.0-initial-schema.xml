@@ -35,10 +35,10 @@
     </changeSet>
 
     <!-- ========================================
-         CHANGESET 2: Création de la table supplier
+         CHANGESET 2: Création de la table suppliers
          ======================================== -->
     <changeSet id="2" author="supplychainx">
-        <createTable tableName="supplier">
+        <createTable tableName="suppliers">
             <column name="id_supplier" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
@@ -56,15 +56,15 @@
             </column>
         </createTable>
         <rollback>
-            <dropTable tableName="supplier"/>
+            <dropTable tableName="suppliers"/>
         </rollback>
     </changeSet>
 
     <!-- ========================================
-         CHANGESET 3: Création de la table raw_material
+         CHANGESET 3: Création de la table raw_materials
          ======================================== -->
     <changeSet id="3" author="supplychainx">
-        <createTable tableName="raw_material">
+        <createTable tableName="raw_materials">
             <column name="id_material" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
@@ -82,7 +82,7 @@
             </column>
         </createTable>
         <rollback>
-            <dropTable tableName="raw_material"/>
+            <dropTable tableName="raw_materials"/>
         </rollback>
     </changeSet>
 
@@ -105,14 +105,14 @@
         <addForeignKeyConstraint baseTableName="raw_material_suppliers"
                                 baseColumnNames="raw_material_id"
                                 constraintName="fk_raw_material_suppliers_material"
-                                referencedTableName="raw_material"
+                                referencedTableName="raw_materials"
                                 referencedColumnNames="id_material"
                                 onDelete="CASCADE"/>
         
         <addForeignKeyConstraint baseTableName="raw_material_suppliers"
                                 baseColumnNames="supplier_id"
                                 constraintName="fk_raw_material_suppliers_supplier"
-                                referencedTableName="supplier"
+                                referencedTableName="suppliers"
                                 referencedColumnNames="id_supplier"
                                 onDelete="CASCADE"/>
         <rollback>
@@ -121,10 +121,10 @@
     </changeSet>
 
     <!-- ========================================
-         CHANGESET 5: Création de la table supply_order
+         CHANGESET 5: Création de la table supply_orders
          ======================================== -->
     <changeSet id="5" author="supplychainx">
-        <createTable tableName="supply_order">
+        <createTable tableName="supply_orders">
             <column name="id_order" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
@@ -139,13 +139,13 @@
             </column>
         </createTable>
         
-        <addForeignKeyConstraint baseTableName="supply_order"
+        <addForeignKeyConstraint baseTableName="supply_orders"
                                 baseColumnNames="supplier_id"
                                 constraintName="fk_supply_order_supplier"
-                                referencedTableName="supplier"
+                                referencedTableName="suppliers"
                                 referencedColumnNames="id_supplier"/>
         <rollback>
-            <dropTable tableName="supply_order"/>
+            <dropTable tableName="supply_orders"/>
         </rollback>
     </changeSet>
 
@@ -168,14 +168,14 @@
         <addForeignKeyConstraint baseTableName="supply_order_materials"
                                 baseColumnNames="supply_order_id"
                                 constraintName="fk_supply_order_materials_order"
-                                referencedTableName="supply_order"
+                                referencedTableName="supply_orders"
                                 referencedColumnNames="id_order"
                                 onDelete="CASCADE"/>
         
         <addForeignKeyConstraint baseTableName="supply_order_materials"
                                 baseColumnNames="raw_material_id"
                                 constraintName="fk_supply_order_materials_material"
-                                referencedTableName="raw_material"
+                                referencedTableName="raw_materials"
                                 referencedColumnNames="id_material"
                                 onDelete="CASCADE"/>
         <rollback>
@@ -184,10 +184,10 @@
     </changeSet>
 
     <!-- ========================================
-         CHANGESET 7: Création de la table product
+         CHANGESET 7: Création de la table products
          ======================================== -->
     <changeSet id="7" author="supplychainx">
-        <createTable tableName="product">
+        <createTable tableName="products">
             <column name="id_product" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
@@ -205,15 +205,15 @@
             </column>
         </createTable>
         <rollback>
-            <dropTable tableName="product"/>
+            <dropTable tableName="products"/>
         </rollback>
     </changeSet>
 
     <!-- ========================================
-         CHANGESET 8: Création de la table bill_of_material (BOM)
+         CHANGESET 8: Création de la table bill_of_materials (BOM)
          ======================================== -->
     <changeSet id="8" author="supplychainx">
-        <createTable tableName="bill_of_material">
+        <createTable tableName="bill_of_materials">
             <column name="id_bom" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
@@ -228,27 +228,27 @@
             </column>
         </createTable>
         
-        <addForeignKeyConstraint baseTableName="bill_of_material"
+        <addForeignKeyConstraint baseTableName="bill_of_materials"
                                 baseColumnNames="product_id"
                                 constraintName="fk_bom_product"
-                                referencedTableName="product"
+                                referencedTableName="products"
                                 referencedColumnNames="id_product"/>
         
-        <addForeignKeyConstraint baseTableName="bill_of_material"
+        <addForeignKeyConstraint baseTableName="bill_of_materials"
                                 baseColumnNames="material_id"
                                 constraintName="fk_bom_material"
-                                referencedTableName="raw_material"
+                                referencedTableName="raw_materials"
                                 referencedColumnNames="id_material"/>
         <rollback>
-            <dropTable tableName="bill_of_material"/>
+            <dropTable tableName="bill_of_materials"/>
         </rollback>
     </changeSet>
 
     <!-- ========================================
-         CHANGESET 9: Création de la table production_order
+         CHANGESET 9: Création de la table production_orders
          ======================================== -->
     <changeSet id="9" author="supplychainx">
-        <createTable tableName="production_order">
+        <createTable tableName="production_orders">
             <column name="id_order" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
@@ -267,21 +267,21 @@
             <column name="end_date" type="DATE"/>
         </createTable>
         
-        <addForeignKeyConstraint baseTableName="production_order"
+        <addForeignKeyConstraint baseTableName="production_orders"
                                 baseColumnNames="product_id"
                                 constraintName="fk_production_order_product"
-                                referencedTableName="product"
+                                referencedTableName="products"
                                 referencedColumnNames="id_product"/>
         <rollback>
-            <dropTable tableName="production_order"/>
+            <dropTable tableName="production_orders"/>
         </rollback>
     </changeSet>
 
     <!-- ========================================
-         CHANGESET 10: Création de la table customer
+         CHANGESET 10: Création de la table customers
          ======================================== -->
     <changeSet id="10" author="supplychainx">
-        <createTable tableName="customer">
+        <createTable tableName="customers">
             <column name="id_customer" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
@@ -296,7 +296,7 @@
             </column>
         </createTable>
         <rollback>
-            <dropTable tableName="customer"/>
+            <dropTable tableName="customers"/>
         </rollback>
     </changeSet>
 
@@ -325,13 +325,13 @@
         <addForeignKeyConstraint baseTableName="orders"
                                 baseColumnNames="customer_id"
                                 constraintName="fk_orders_customer"
-                                referencedTableName="customer"
+                                referencedTableName="customers"
                                 referencedColumnNames="id_customer"/>
         
         <addForeignKeyConstraint baseTableName="orders"
                                 baseColumnNames="product_id"
                                 constraintName="fk_orders_product"
-                                referencedTableName="product"
+                                referencedTableName="products"
                                 referencedColumnNames="id_product"/>
         <rollback>
             <dropTable tableName="orders"/>
@@ -339,10 +339,10 @@
     </changeSet>
 
     <!-- ========================================
-         CHANGESET 12: Création de la table delivery
+         CHANGESET 12: Création de la table deliveries
          ======================================== -->
     <changeSet id="12" author="supplychainx">
-        <createTable tableName="delivery">
+        <createTable tableName="deliveries">
             <column name="id_delivery" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
@@ -362,13 +362,13 @@
             </column>
         </createTable>
         
-        <addForeignKeyConstraint baseTableName="delivery"
+        <addForeignKeyConstraint baseTableName="deliveries"
                                 baseColumnNames="order_id"
                                 constraintName="fk_delivery_order"
                                 referencedTableName="orders"
                                 referencedColumnNames="id_order"/>
         <rollback>
-            <dropTable tableName="delivery"/>
+            <dropTable tableName="deliveries"/>
         </rollback>
     </changeSet>
 

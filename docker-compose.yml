@@ -11,7 +11,7 @@ services:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_ROOT_HOST: '%'
     ports:
-      - "3306:3306"
+      - "3307:3306"
     volumes:
       - mysql_data:/var/lib/mysql
     networks:
@@ -42,9 +42,56 @@ services:
       - "8080:8080"
     networks:
       - supplychainx-network
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: supplychainx-phpmyadmin
+    restart: unless-stopped
+    depends_on:
+      - mysql
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+      PMA_USER: root
+      PMA_PASSWORD: root
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "8081:80"  # phpMyAdmin accessible sur http://localhost:8081
+    networks:
+      - supplychainx-network
+
+  # SonarQube (Analyse de qualité du code)
+  sonarqube:
+    image: sonarqube:community
+    container_name: supplychainx-sonarqube
+    restart: unless-stopped
+    environment:
+      # Désactive les checks Elasticsearch (pour éviter les erreurs de mémoire)
+      SONAR_ES_BOOTSTRAP_CHECKS_DISABLE: 'true'
+      # Configuration mémoire
+      SONAR_JAVA_OPTS: '-Xmx512m -Xms128m'
+    ports:
+      - "9000:9000"
+    volumes:
+      - sonarqube_data:/opt/sonarqube/data
+      - sonarqube_extensions:/opt/sonarqube/extensions
+      - sonarqube_logs:/opt/sonarqube/logs
+    networks:
+      - supplychainx-network
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:9000/api/system/status || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
 
 volumes:
   mysql_data:
+    driver: local
+  sonarqube_data:
+    driver: local
+  sonarqube_extensions:
+    driver: local
+  sonarqube_logs:
     driver: local
 
 networks:

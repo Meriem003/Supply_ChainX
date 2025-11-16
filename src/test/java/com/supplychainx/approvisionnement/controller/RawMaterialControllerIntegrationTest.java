@@ -59,6 +59,7 @@ class RawMaterialControllerIntegrationTest {
         updateDTO.setName("Updated Steel");
         updateDTO.setStock(150);
         updateDTO.setStockMin(15);
+        updateDTO.setUnit("kg");
     }
 
     @Test

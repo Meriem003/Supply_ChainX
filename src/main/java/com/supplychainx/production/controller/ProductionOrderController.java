@@ -70,4 +70,13 @@ public class ProductionOrderController {
         List<ProductionOrderResponseDTO> orders = productionOrderService.getProductionOrdersByStatus(status);
         return ResponseEntity.ok(orders);
     }
+
+    @GetMapping("/{id}")
+    @RequiresRole(UserRole.SUPERVISEUR_PRODUCTION)
+    @Operation(summary = "Récupérer un ordre de production par ID", 
+               description = "Permet de récupérer les détails d'un ordre de production spécifique")
+    public ResponseEntity<ProductionOrderResponseDTO> getProductionOrderById(@PathVariable Long id) {
+        ProductionOrderResponseDTO order = productionOrderService.getProductionOrderById(id);
+        return ResponseEntity.ok(order);
+    }
 }

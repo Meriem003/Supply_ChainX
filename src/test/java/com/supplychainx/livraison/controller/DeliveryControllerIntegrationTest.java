@@ -77,6 +77,8 @@ class DeliveryControllerIntegrationTest {
         testUser.setEmail(testUserEmail);
         testUser.setPassword(testUserPassword);
         testUser.setRole(UserRole.ADMIN);
+        testUser.setFirstName("Admin");
+        testUser.setLastName("Test");
         userRepository.save(testUser);
 
         deliveryRepository.deleteAll();
@@ -255,7 +257,7 @@ class DeliveryControllerIntegrationTest {
         mockMvc.perform(post("/api/deliveries/{id}/calculate-cost", testDelivery.getIdDelivery())
                 .header("email", testUserEmail).header("password", testUserPassword)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(String.format("{\"baseCost\": %.2f, \"distance\": %.2f, \"ratePerKm\": %.2f}", 
+                .content(String.format(java.util.Locale.US, "{\"baseCost\": %.2f, \"distance\": %.2f, \"ratePerKm\": %.2f}", 
                         baseCost, distance, ratePerKm)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.cost", is(expectedCost)));
@@ -281,8 +283,16 @@ class DeliveryControllerIntegrationTest {
     @Test
     @DisplayName("GET /api/deliveries?status=PLANIFIEE - Filtrer par statut")
     void testGetDeliveriesByStatus_Planifiee() throws Exception {
+        // Create a new order for the second delivery to avoid unique constraint violation
+        Order newOrder = new Order();
+        newOrder.setCustomer(testCustomer);
+        newOrder.setProduct(testProduct);
+        newOrder.setQuantity(5);
+        newOrder.setStatus(OrderStatus.EN_PREPARATION);
+        newOrder = orderRepository.save(newOrder);
+        
         Delivery delivery2 = new Delivery();
-        delivery2.setOrder(testOrder);
+        delivery2.setOrder(newOrder);
         delivery2.setVehicle("Moto");
         delivery2.setDriver("Livreur Express");
         delivery2.setStatus(DeliveryStatus.EN_COURS);

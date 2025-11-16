@@ -94,4 +94,12 @@ public class ProductionOrderService {
                 .map(productionOrderMapper::toResponseDTO)
                 .collect(Collectors.toList());
     }
+
+    @Transactional(readOnly = true)
+    public ProductionOrderResponseDTO getProductionOrderById(Long id) {
+        ProductionOrder order = productionOrderRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Ordre de production non trouvé avec l'ID: " + id));
+        return productionOrderMapper.toResponseDTO(order);
+    }
 }

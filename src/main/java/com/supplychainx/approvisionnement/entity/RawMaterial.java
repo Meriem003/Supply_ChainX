@@ -33,8 +33,8 @@ public class RawMaterial {
     
     @ManyToMany
     @JoinTable(
-        name = "material_suppliers",
-        joinColumns = @JoinColumn(name = "material_id"),
+        name = "raw_material_suppliers",
+        joinColumns = @JoinColumn(name = "raw_material_id"),
         inverseJoinColumns = @JoinColumn(name = "supplier_id")
     )
     private List<Supplier> suppliers = new ArrayList<>();

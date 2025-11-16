@@ -15,6 +15,7 @@ public class BillOfMaterial {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_bom")
     private Long idBOM;
     
     @ManyToOne

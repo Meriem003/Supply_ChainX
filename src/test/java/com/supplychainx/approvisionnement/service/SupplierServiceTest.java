@@ -17,6 +17,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import com.supplychainx.approvisionnement.repository.SupplyOrderRepository;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -33,6 +34,9 @@ class SupplierServiceTest {
 
     @Mock
     private SupplierRepository supplierRepository;
+
+    @Mock
+    private SupplyOrderRepository supplyOrderRepository;
 
     @Mock
     private SupplierMapper supplierMapper;
@@ -143,6 +147,7 @@ class SupplierServiceTest {
         supplier.getOrders().add(completedOrder);
 
         when(supplierRepository.findById(1L)).thenReturn(Optional.of(supplier));
+        when(supplyOrderRepository.countBySupplier_IdSupplierAndStatusIn(eq(1L), anyList())).thenReturn(0L);
         doNothing().when(supplierRepository).delete(supplier);
 
         supplierService.deleteSupplier(1L);
@@ -159,6 +164,7 @@ class SupplierServiceTest {
         supplier.getOrders().add(pendingOrder);
 
         when(supplierRepository.findById(1L)).thenReturn(Optional.of(supplier));
+        when(supplyOrderRepository.countBySupplier_IdSupplierAndStatusIn(eq(1L), anyList())).thenReturn(1L);
 
         assertThrows(BusinessRuleException.class, () -> {
             supplierService.deleteSupplier(1L);
@@ -175,6 +181,7 @@ class SupplierServiceTest {
         supplier.getOrders().add(inProgressOrder);
 
         when(supplierRepository.findById(1L)).thenReturn(Optional.of(supplier));
+        when(supplyOrderRepository.countBySupplier_IdSupplierAndStatusIn(eq(1L), anyList())).thenReturn(1L);
 
         assertThrows(BusinessRuleException.class, () -> {
             supplierService.deleteSupplier(1L);
