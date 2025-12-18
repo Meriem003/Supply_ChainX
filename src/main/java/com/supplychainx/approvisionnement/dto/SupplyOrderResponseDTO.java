@@ -15,7 +15,7 @@ public class SupplyOrderResponseDTO {
 
     private Long idOrder;
     private SupplierResponseDTO supplier;
-    private List<RawMaterialResponseDTO> materials;
+    private List<RawMaterialWithQuantityDTO> materials;
     private LocalDate orderDate;
     private String status;
 }

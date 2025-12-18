@@ -4,6 +4,7 @@ import com.supplychainx.approvisionnement.dto.*;
 import com.supplychainx.approvisionnement.entity.RawMaterial;
 import com.supplychainx.approvisionnement.entity.Supplier;
 import com.supplychainx.approvisionnement.entity.SupplyOrder;
+import com.supplychainx.approvisionnement.entity.SupplyOrderMaterial;
 import com.supplychainx.approvisionnement.enums.SupplyOrderStatus;
 import com.supplychainx.approvisionnement.repository.RawMaterialRepository;
 import com.supplychainx.approvisionnement.repository.SupplierRepository;
@@ -38,16 +39,24 @@ public class SupplyOrderService {
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Fournisseur non trouvé avec l'ID: " + dto.getSupplierId()));
 
-        List<RawMaterial> materials = rawMaterialRepository.findAllById(dto.getMaterialIds());
-        if (materials.size() != dto.getMaterialIds().size()) {
-            throw new ResourceNotFoundException("Certaines matières premières n'existent pas");
-        }
-
         SupplyOrder order = new SupplyOrder();
         order.setSupplier(supplier);
-        order.setMaterials(materials);
         order.setOrderDate(dto.getOrderDate());
         order.setStatus(SupplyOrderStatus.valueOf(dto.getStatus()));
+
+        // Créer les SupplyOrderMaterial avec les quantités
+        for (MaterialQuantityDTO materialDto : dto.getMaterials()) {
+            RawMaterial material = rawMaterialRepository.findById(materialDto.getMaterialId())
+                    .orElseThrow(() -> new ResourceNotFoundException(
+                            "Matière première non trouvée avec l'ID: " + materialDto.getMaterialId()));
+            
+            SupplyOrderMaterial orderMaterial = new SupplyOrderMaterial();
+            orderMaterial.setSupplyOrder(order);
+            orderMaterial.setRawMaterial(material);
+            orderMaterial.setQuantity(materialDto.getQuantity());
+            
+            order.getOrderMaterials().add(orderMaterial);
+        }
 
         SupplyOrder savedOrder = supplyOrderRepository.save(order);
         return supplyOrderMapper.toResponseDTO(savedOrder);
@@ -63,15 +72,25 @@ public class SupplyOrderService {
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Fournisseur non trouvé avec l'ID: " + dto.getSupplierId()));
 
-        List<RawMaterial> materials = rawMaterialRepository.findAllById(dto.getMaterialIds());
-        if (materials.size() != dto.getMaterialIds().size()) {
-            throw new ResourceNotFoundException("Certaines matières premières n'existent pas");
-        }
-
         order.setSupplier(supplier);
-        order.setMaterials(materials);
         order.setOrderDate(dto.getOrderDate());
         order.setStatus(SupplyOrderStatus.valueOf(dto.getStatus()));
+        
+        // Supprimer les anciens matériaux et ajouter les nouveaux avec quantités
+        order.getOrderMaterials().clear();
+        
+        for (MaterialQuantityDTO materialDto : dto.getMaterials()) {
+            RawMaterial material = rawMaterialRepository.findById(materialDto.getMaterialId())
+                    .orElseThrow(() -> new ResourceNotFoundException(
+                            "Matière première non trouvée avec l'ID: " + materialDto.getMaterialId()));
+            
+            SupplyOrderMaterial orderMaterial = new SupplyOrderMaterial();
+            orderMaterial.setSupplyOrder(order);
+            orderMaterial.setRawMaterial(material);
+            orderMaterial.setQuantity(materialDto.getQuantity());
+            
+            order.getOrderMaterials().add(orderMaterial);
+        }
 
         SupplyOrder updatedOrder = supplyOrderRepository.save(order);
         return supplyOrderMapper.toResponseDTO(updatedOrder);

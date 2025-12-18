@@ -1,10 +1,8 @@
 package com.supplychainx.livraison.controller;
 
-import com.supplychainx.common.enums.UserRole;
 import com.supplychainx.livraison.dto.CustomerRequestDTO;
 import com.supplychainx.livraison.dto.CustomerResponseDTO;
 import com.supplychainx.livraison.service.CustomerService;
-import com.supplychainx.security.RequiresRole;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -24,7 +22,6 @@ public class CustomerController {
     private final CustomerService customerService;
     
     @PostMapping
-    @RequiresRole(UserRole.GESTIONNAIRE_COMMERCIAL)
     @Operation(summary = "Créer un client",
             description = "Permet de créer un nouveau client avec nom, adresse et ville")
     public ResponseEntity<CustomerResponseDTO> createCustomer(@Valid @RequestBody CustomerRequestDTO dto) {
@@ -33,7 +30,6 @@ public class CustomerController {
     }
 
     @PutMapping("/{id}")
-    @RequiresRole(UserRole.GESTIONNAIRE_COMMERCIAL)
     @Operation(summary = "Modifier un client",
             description = "Permet de modifier toutes les informations d'un client existant")
     public ResponseEntity<CustomerResponseDTO> updateCustomer(
@@ -44,7 +40,6 @@ public class CustomerController {
     }
 
     @DeleteMapping("/{id}")
-    @RequiresRole(UserRole.GESTIONNAIRE_COMMERCIAL)
     @Operation(summary = "Supprimer un client",
             description = "Permet de supprimer un client uniquement s'il n'a aucune commande associée")
     public ResponseEntity<Void> deleteCustomer(@PathVariable Long id) {
@@ -53,7 +48,6 @@ public class CustomerController {
     }
 
     @GetMapping
-    @RequiresRole(UserRole.GESTIONNAIRE_COMMERCIAL)
     @Operation(summary = "Consulter tous les clients",
             description = "Retourne la liste de tous les clients")
     public ResponseEntity<List<CustomerResponseDTO>> getAllCustomers() {
@@ -62,7 +56,6 @@ public class CustomerController {
     }
 
     @GetMapping("/search")
-    @RequiresRole(UserRole.GESTIONNAIRE_COMMERCIAL)
     @Operation(summary = "Rechercher un client par nom",
             description = "Permet de filtrer les clients dont le nom contient la chaîne recherchée (insensible à la casse)")
     public ResponseEntity<List<CustomerResponseDTO>> searchCustomersByName(@RequestParam String name) {

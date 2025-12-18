@@ -9,7 +9,6 @@ import com.supplychainx.exception.BusinessRuleException;
 import com.supplychainx.exception.ResourceNotFoundException;
 import com.supplychainx.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
 
     public UserResponseDTO createUser(UserCreateDTO dto) {
@@ -31,7 +29,7 @@ public class UserService {
         user.setFirstName(dto.getFirstName());
         user.setLastName(dto.getLastName());
         user.setEmail(dto.getEmail());
-        user.setPassword(passwordEncoder.encode(dto.getPassword()));
+        user.setPassword(dto.getPassword()); // ⚠️ Mot de passe stocké en clair (NON SÉCURISÉ)
         user.setRole(dto.getRole());
 
         user = userRepository.save(user);

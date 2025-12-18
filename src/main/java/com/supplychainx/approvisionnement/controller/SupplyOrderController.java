@@ -4,8 +4,6 @@ import com.supplychainx.approvisionnement.dto.SupplyOrderCreateDTO;
 import com.supplychainx.approvisionnement.dto.SupplyOrderResponseDTO;
 import com.supplychainx.approvisionnement.dto.SupplyOrderUpdateDTO;
 import com.supplychainx.approvisionnement.service.SupplyOrderService;
-import com.supplychainx.common.enums.UserRole;
-import com.supplychainx.security.RequiresRole;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -25,7 +23,6 @@ public class SupplyOrderController {
     private final SupplyOrderService supplyOrderService;
 
     @PostMapping
-    @RequiresRole(UserRole.RESPONSABLE_ACHATS)
     @Operation(summary = "Créer une commande d'approvisionnement", 
                description = "US13: Permet au responsable des achats de créer une nouvelle commande")
     public ResponseEntity<SupplyOrderResponseDTO> createSupplyOrder(@Valid @RequestBody SupplyOrderCreateDTO dto) {
@@ -34,7 +31,6 @@ public class SupplyOrderController {
     }
 
     @PutMapping("/{id}")
-    @RequiresRole(UserRole.RESPONSABLE_ACHATS)
     @Operation(summary = "Modifier une commande d'approvisionnement", 
                description = "US14: Permet au responsable des achats de modifier une commande existante")
     public ResponseEntity<SupplyOrderResponseDTO> updateSupplyOrder(
@@ -45,7 +41,6 @@ public class SupplyOrderController {
     }
 
     @DeleteMapping("/{id}")
-    @RequiresRole(UserRole.RESPONSABLE_ACHATS)
     @Operation(summary = "Supprimer une commande d'approvisionnement", 
                description = "US15: Permet au responsable des achats de supprimer une commande non livrée")
     public ResponseEntity<Void> deleteSupplyOrder(@PathVariable Long id) {
@@ -54,7 +49,6 @@ public class SupplyOrderController {
     }
 
     @GetMapping
-    @RequiresRole(UserRole.SUPERVISEUR_LOGISTIQUE)
     @Operation(summary = "Consulter toutes les commandes", 
                description = "US16: Permet au superviseur logistique de consulter toutes les commandes")
     public ResponseEntity<List<SupplyOrderResponseDTO>> getAllSupplyOrders() {
@@ -63,7 +57,6 @@ public class SupplyOrderController {
     }
 
     @GetMapping("/status/{status}")
-    @RequiresRole(UserRole.SUPERVISEUR_LOGISTIQUE)
     @Operation(summary = "Filtrer les commandes par statut", 
                description = "US17: Permet au superviseur logistique de suivre les commandes selon leur statut (EN_ATTENTE, EN_COURS, RECUE)")
     public ResponseEntity<List<SupplyOrderResponseDTO>> getSupplyOrdersByStatus(@PathVariable String status) {

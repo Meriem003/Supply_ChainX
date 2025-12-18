@@ -16,7 +16,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
 
@@ -30,9 +29,6 @@ class UserServiceTest {
 
     @Mock
     private UserRepository userRepository;
-
-    @Mock
-    private PasswordEncoder passwordEncoder;
 
     @Mock
     private UserMapper userMapper;
@@ -52,7 +48,7 @@ class UserServiceTest {
         user.setFirstName("Jean");
         user.setLastName("Dupont");
         user.setEmail("jean.dupont@supplychainx.com");
-        user.setPassword("$2a$10$encodedPassword");
+        user.setPassword("password123");
         user.setRole(UserRole.CHEF_PRODUCTION);
 
         createDTO = new UserCreateDTO();
@@ -78,15 +74,14 @@ class UserServiceTest {
     @DisplayName("Créer un utilisateur avec succès")
     void testCreateUser_Success() {
         when(userRepository.findByEmail(createDTO.getEmail())).thenReturn(Optional.empty());
-        when(passwordEncoder.encode(createDTO.getPassword())).thenReturn("$2a$10$encodedPassword");
         when(userRepository.save(any(User.class))).thenReturn(user);
         when(userMapper.toResponseDTO(user)).thenReturn(responseDTO);
+        
         UserResponseDTO result = userService.createUser(createDTO);
 
         assertNotNull(result);
         assertEquals(responseDTO.getEmail(), result.getEmail());
         verify(userRepository, times(1)).findByEmail(createDTO.getEmail());
-        verify(passwordEncoder, times(1)).encode(createDTO.getPassword());
         verify(userRepository, times(1)).save(any(User.class));
         verify(userMapper, times(1)).toResponseDTO(user);
     }
@@ -108,7 +103,6 @@ class UserServiceTest {
     void testCreateUser_WithAdminRole() {
         createDTO.setRole(UserRole.ADMIN);
         when(userRepository.findByEmail(createDTO.getEmail())).thenReturn(Optional.empty());
-        when(passwordEncoder.encode(createDTO.getPassword())).thenReturn("$2a$10$encodedPassword");
         when(userRepository.save(any(User.class))).thenReturn(user);
         when(userMapper.toResponseDTO(user)).thenReturn(responseDTO);
 
@@ -123,10 +117,11 @@ class UserServiceTest {
     void testCreateUser_WithChefProductionRole() {
         createDTO.setRole(UserRole.CHEF_PRODUCTION);
         when(userRepository.findByEmail(createDTO.getEmail())).thenReturn(Optional.empty());
-        when(passwordEncoder.encode(createDTO.getPassword())).thenReturn("$2a$10$encodedPassword");
         when(userRepository.save(any(User.class))).thenReturn(user);
         when(userMapper.toResponseDTO(user)).thenReturn(responseDTO);
+        
         UserResponseDTO result = userService.createUser(createDTO);
+        
         assertNotNull(result);
         verify(userRepository, times(1)).save(any(User.class));
     }
@@ -136,7 +131,6 @@ class UserServiceTest {
     void testCreateUser_WithGestionnaireApprovisionnementRole() {
         createDTO.setRole(UserRole.GESTIONNAIRE_APPROVISIONNEMENT);
         when(userRepository.findByEmail(createDTO.getEmail())).thenReturn(Optional.empty());
-        when(passwordEncoder.encode(createDTO.getPassword())).thenReturn("$2a$10$encodedPassword");
         when(userRepository.save(any(User.class))).thenReturn(user);
         when(userMapper.toResponseDTO(user)).thenReturn(responseDTO);
 
@@ -151,7 +145,6 @@ class UserServiceTest {
     void testCreateUser_WithGestionnaireCommercialRole() {
         createDTO.setRole(UserRole.GESTIONNAIRE_COMMERCIAL);
         when(userRepository.findByEmail(createDTO.getEmail())).thenReturn(Optional.empty());
-        when(passwordEncoder.encode(createDTO.getPassword())).thenReturn("$2a$10$encodedPassword");
         when(userRepository.save(any(User.class))).thenReturn(user);
         when(userMapper.toResponseDTO(user)).thenReturn(responseDTO);
 
@@ -162,20 +155,18 @@ class UserServiceTest {
     }
 
     @Test
-    @DisplayName("Vérifier que le mot de passe est crypté lors de la création")
-    void testCreateUser_PasswordIsEncoded() {
-        String plainPassword = "password123";
-        String encodedPassword = "$2a$10$encodedPassword";
-        
-        createDTO.setPassword(plainPassword);
+    @DisplayName("Créer un utilisateur avec toutes les informations obligatoires")
+    void testCreateUser_WithAllRequiredFields() {
         when(userRepository.findByEmail(createDTO.getEmail())).thenReturn(Optional.empty());
-        when(passwordEncoder.encode(plainPassword)).thenReturn(encodedPassword);
         when(userRepository.save(any(User.class))).thenReturn(user);
         when(userMapper.toResponseDTO(user)).thenReturn(responseDTO);
 
-        userService.createUser(createDTO);
+        UserResponseDTO result = userService.createUser(createDTO);
 
-        verify(passwordEncoder, times(1)).encode(plainPassword);
+        assertNotNull(result);
+        assertNotNull(result.getFirstName());
+        assertNotNull(result.getLastName());
+        assertNotNull(result.getEmail());
         verify(userRepository, times(1)).save(any(User.class));
     }
 

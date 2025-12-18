@@ -4,8 +4,6 @@ import com.supplychainx.approvisionnement.dto.SupplierCreateDTO;
 import com.supplychainx.approvisionnement.dto.SupplierResponseDTO;
 import com.supplychainx.approvisionnement.dto.SupplierUpdateDTO;
 import com.supplychainx.approvisionnement.service.SupplierService;
-import com.supplychainx.common.enums.UserRole;
-import com.supplychainx.security.RequiresRole;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -33,7 +31,6 @@ public class SupplierController {
      * Accessible uniquement au GESTIONNAIRE_APPROVISIONNEMENT
      */
     @PostMapping
-    @RequiresRole(UserRole.GESTIONNAIRE_APPROVISIONNEMENT)
     @Operation(summary = "Créer un fournisseur", description = "Ajoute un nouveau fournisseur (US3)")
     public ResponseEntity<SupplierResponseDTO> createSupplier(@Valid @RequestBody SupplierCreateDTO dto) {
         SupplierResponseDTO created = supplierService.createSupplier(dto);
@@ -45,7 +42,6 @@ public class SupplierController {
      * Accessible uniquement au GESTIONNAIRE_APPROVISIONNEMENT
      */
     @PutMapping("/{id}")
-    @RequiresRole(UserRole.GESTIONNAIRE_APPROVISIONNEMENT)
     @Operation(summary = "Modifier un fournisseur", description = "Met à jour un fournisseur existant (US4)")
     public ResponseEntity<SupplierResponseDTO> updateSupplier(
             @PathVariable Long id,
@@ -59,7 +55,6 @@ public class SupplierController {
      * Accessible uniquement au GESTIONNAIRE_APPROVISIONNEMENT
      */
     @DeleteMapping("/{id}")
-    @RequiresRole(UserRole.GESTIONNAIRE_APPROVISIONNEMENT)
     @Operation(summary = "Supprimer un fournisseur", 
                description = "Supprime un fournisseur s'il n'a aucune commande active (US5)")
     public ResponseEntity<Void> deleteSupplier(@PathVariable Long id) {
@@ -69,7 +64,6 @@ public class SupplierController {
 
 
     @GetMapping("/{id}")
-    @RequiresRole(UserRole.SUPERVISEUR_LOGISTIQUE)
     @Operation(summary = "Récupérer un fournisseur", description = "Récupère un fournisseur par son ID")
     public ResponseEntity<SupplierResponseDTO> getSupplierById(@PathVariable Long id) {
         SupplierResponseDTO supplier = supplierService.getSupplierById(id);
@@ -81,7 +75,6 @@ public class SupplierController {
      * Accessible au SUPERVISEUR_LOGISTIQUE
      */
     @GetMapping
-    @RequiresRole(UserRole.SUPERVISEUR_LOGISTIQUE)
     @Operation(summary = "Liste des fournisseurs", description = "Consulte la liste de tous les fournisseurs (US6)")
     public ResponseEntity<List<SupplierResponseDTO>> getAllSuppliers() {
         List<SupplierResponseDTO> suppliers = supplierService.getAllSuppliers();
@@ -93,7 +86,6 @@ public class SupplierController {
      * Accessible au RESPONSABLE_ACHATS
      */
     @GetMapping("/search")
-    @RequiresRole(UserRole.RESPONSABLE_ACHATS)
     @Operation(summary = "Rechercher un fournisseur", 
                description = "Recherche un fournisseur par nom (recherche partielle) (US7)")
     public ResponseEntity<List<SupplierResponseDTO>> searchSuppliers(@RequestParam String name) {

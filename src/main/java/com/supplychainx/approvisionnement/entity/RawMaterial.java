@@ -31,6 +31,9 @@ public class RawMaterial {
     @Column(nullable = false)
     private String unit;
     
+    @OneToMany(mappedBy = "rawMaterial")
+    private List<SupplyOrderMaterial> supplyOrderMaterials = new ArrayList<>();
+    
     @ManyToMany
     @JoinTable(
         name = "raw_material_suppliers",

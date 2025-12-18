@@ -19,7 +19,7 @@ public class SupplyOrderUpdateDTO {
     private Long supplierId;
 
     @NotEmpty(message = "Au moins une matière première est obligatoire")
-    private List<Long> materialIds;
+    private List<MaterialQuantityDTO> materials;
 
     @NotNull(message = "La date de commande est obligatoire")
     private LocalDate orderDate;

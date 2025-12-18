@@ -2,28 +2,29 @@ package com.supplychainx.approvisionnement.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.supplychainx.approvisionnement.dto.RawMaterialCreateDTO;
-import com.supplychainx.approvisionnement.dto.RawMaterialResponseDTO;
 import com.supplychainx.approvisionnement.dto.RawMaterialUpdateDTO;
-import com.supplychainx.approvisionnement.service.RawMaterialService;
+import com.supplychainx.approvisionnement.entity.RawMaterial;
+import com.supplychainx.approvisionnement.repository.RawMaterialRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
-import java.util.List;
-
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(RawMaterialController.class)
+@SpringBootTest
+@AutoConfigureMockMvc
+@ActiveProfiles("test")
+@Transactional
+@WithMockUser(username = "admin", roles = {"ADMIN"})
 class RawMaterialControllerIntegrationTest {
 
     @Autowired
@@ -32,22 +33,15 @@ class RawMaterialControllerIntegrationTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    @MockBean
-    private RawMaterialService rawMaterialService;
+    @Autowired
+    private RawMaterialRepository rawMaterialRepository;
 
-    private RawMaterialResponseDTO responseDTO;
     private RawMaterialCreateDTO createDTO;
     private RawMaterialUpdateDTO updateDTO;
 
     @BeforeEach
     void setUp() {
-        responseDTO = new RawMaterialResponseDTO();
-        responseDTO.setIdMaterial(1L);
-        responseDTO.setName("Steel");
-        responseDTO.setStock(100);
-        responseDTO.setStockMin(10);
-        responseDTO.setUnit("kg");
-        responseDTO.setIsCritical(false);
+        rawMaterialRepository.deleteAll();
 
         createDTO = new RawMaterialCreateDTO();
         createDTO.setName("Steel");
@@ -65,39 +59,43 @@ class RawMaterialControllerIntegrationTest {
     @Test
     @DisplayName("Should create raw material via REST API")
     void testCreateRawMaterial() throws Exception {
-        when(rawMaterialService.createRawMaterial(any(RawMaterialCreateDTO.class)))
-            .thenReturn(responseDTO);
-
         mockMvc.perform(post("/api/raw-materials")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(createDTO)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.idMaterial").value(1))
                 .andExpect(jsonPath("$.name").value("Steel"))
-                .andExpect(jsonPath("$.stock").value(100));
+                .andExpect(jsonPath("$.stock").value(100))
+                .andExpect(jsonPath("$.stockMin").value(10))
+                .andExpect(jsonPath("$.unit").value("kg"));
     }
 
     @Test
     @DisplayName("Should get all raw materials via REST API")
     void testGetAllRawMaterials() throws Exception {
-        List<RawMaterialResponseDTO> materials = Arrays.asList(responseDTO);
-        when(rawMaterialService.getAllRawMaterials()).thenReturn(materials);
+        RawMaterial material = new RawMaterial();
+        material.setName("Steel");
+        material.setStock(100);
+        material.setStockMin(10);
+        material.setUnit("kg");
+        rawMaterialRepository.save(material);
 
         mockMvc.perform(get("/api/raw-materials"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].idMaterial").value(1))
-                .andExpect(jsonPath("$[0].name").value("Steel"));
+                .andExpect(jsonPath("$[0].name").value("Steel"))
+                .andExpect(jsonPath("$[0].stock").value(100));
     }
 
     @Test
     @DisplayName("Should update raw material via REST API")
     void testUpdateRawMaterial() throws Exception {
-        responseDTO.setName("Updated Steel");
-        responseDTO.setStock(150);
-        when(rawMaterialService.updateRawMaterial(eq(1L), any(RawMaterialUpdateDTO.class)))
-            .thenReturn(responseDTO);
+        RawMaterial material = new RawMaterial();
+        material.setName("Steel");
+        material.setStock(100);
+        material.setStockMin(10);
+        material.setUnit("kg");
+        material = rawMaterialRepository.save(material);
 
-        mockMvc.perform(put("/api/raw-materials/1")
+        mockMvc.perform(put("/api/raw-materials/" + material.getIdMaterial())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(updateDTO)))
                 .andExpect(status().isOk())
@@ -108,16 +106,26 @@ class RawMaterialControllerIntegrationTest {
     @Test
     @DisplayName("Should delete raw material via REST API")
     void testDeleteRawMaterial() throws Exception {
-        mockMvc.perform(delete("/api/raw-materials/1"))
+        RawMaterial material = new RawMaterial();
+        material.setName("Steel");
+        material.setStock(100);
+        material.setStockMin(10);
+        material.setUnit("kg");
+        material = rawMaterialRepository.save(material);
+
+        mockMvc.perform(delete("/api/raw-materials/" + material.getIdMaterial()))
                 .andExpect(status().isNoContent());
     }
 
     @Test
     @DisplayName("Should get critical stock materials via REST API")
     void testGetCriticalStockMaterials() throws Exception {
-        responseDTO.setIsCritical(true);
-        List<RawMaterialResponseDTO> materials = Arrays.asList(responseDTO);
-        when(rawMaterialService.getCriticalStockMaterials()).thenReturn(materials);
+        RawMaterial material = new RawMaterial();
+        material.setName("Steel");
+        material.setStock(5);
+        material.setStockMin(10);
+        material.setUnit("kg");
+        rawMaterialRepository.save(material);
 
         mockMvc.perform(get("/api/raw-materials/critical"))
                 .andExpect(status().isOk())

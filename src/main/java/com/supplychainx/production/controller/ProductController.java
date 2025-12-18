@@ -1,11 +1,9 @@
 package com.supplychainx.production.controller;
 
-import com.supplychainx.common.enums.UserRole;
 import com.supplychainx.production.dto.ProductCreateDTO;
 import com.supplychainx.production.dto.ProductResponseDTO;
 import com.supplychainx.production.dto.ProductUpdateDTO;
 import com.supplychainx.production.service.ProductService;
-import com.supplychainx.security.RequiresRole;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -25,7 +23,6 @@ public class ProductController {
     private final ProductService productService;
 
     @PostMapping
-    @RequiresRole(UserRole.CHEF_PRODUCTION)
     @Operation(summary = "Créer un produit fini", 
                description = "Permet au chef de production d'ajouter un nouveau produit")
     public ResponseEntity<ProductResponseDTO> createProduct(@Valid @RequestBody ProductCreateDTO dto) {
@@ -34,7 +31,6 @@ public class ProductController {
     }
 
     @PutMapping("/{id}")
-    @RequiresRole(UserRole.CHEF_PRODUCTION)
     @Operation(summary = "Modifier un produit fini", 
                description = "Permet au chef de production de modifier un produit existant")
     public ResponseEntity<ProductResponseDTO> updateProduct(
@@ -45,7 +41,6 @@ public class ProductController {
     }
 
     @DeleteMapping("/{id}")
-    @RequiresRole(UserRole.CHEF_PRODUCTION)
     @Operation(summary = "Supprimer un produit fini", 
                description = "Permet au chef de production de supprimer un produit sans ordre associé")
     public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
@@ -54,7 +49,6 @@ public class ProductController {
     }
 
     @GetMapping
-    @RequiresRole(UserRole.SUPERVISEUR_PRODUCTION)
     @Operation(summary = "Consulter tous les produits", 
                description = "Permet au superviseur production de consulter tous les produits")
     public ResponseEntity<List<ProductResponseDTO>> getAllProducts() {
@@ -63,7 +57,6 @@ public class ProductController {
     }
 
     @GetMapping("/search")
-    @RequiresRole(UserRole.SUPERVISEUR_PRODUCTION)
     @Operation(summary = "Rechercher un produit par nom", 
                description = "Permet au superviseur production de rechercher un produit par nom")
     public ResponseEntity<List<ProductResponseDTO>> searchProductsByName(@RequestParam String name) {

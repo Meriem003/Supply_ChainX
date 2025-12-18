@@ -1,10 +1,8 @@
 package com.supplychainx.production.controller;
 
-import com.supplychainx.common.enums.UserRole;
 import com.supplychainx.production.dto.ProductionAvailabilityResponseDTO;
 import com.supplychainx.production.dto.ProductionTimeResponseDTO;
 import com.supplychainx.production.service.PlanningService;
-import com.supplychainx.security.RequiresRole;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +18,6 @@ public class PlanningController {
     private final PlanningService planningService;
 
     @GetMapping("/check-availability")
-    @RequiresRole(UserRole.PLANIFICATEUR)
     @Operation(summary = "Vérifier la disponibilité des matières",
             description = "Permet de vérifier si toutes les matières premières sont disponibles pour produire une quantité donnée d'un produit")
     public ResponseEntity<ProductionAvailabilityResponseDTO> checkMaterialAvailability(
@@ -32,7 +29,6 @@ public class PlanningController {
     
 
     @GetMapping("/calculate-time")
-    @RequiresRole(UserRole.PLANIFICATEUR)
     @Operation(summary = "Calculer le temps de production",
             description = "Permet de calculer le temps estimé de production pour une quantité donnée d'un produit")
     public ResponseEntity<ProductionTimeResponseDTO> calculateProductionTime(

@@ -39,7 +39,7 @@
         <sonar.host.url>http://localhost:9000</sonar.host.url>
         <sonar.projectKey>SupplyChainX</sonar.projectKey>
         <sonar.projectName>SupplyChainX</sonar.projectName>
-        <sonar.token>sqp_44c225a477bd9a2d5d04bdd33df1690d5410e5df</sonar.token>
+        <sonar.token>sqp_28e8b3b96fca57f3fb2a125ab3143e496c5d348d</sonar.token>
         
         <!-- JaCoCo -->
         <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
@@ -98,29 +98,30 @@
             <version>${mapstruct.version}</version>
         </dependency>
         
-        <!-- Spring AOP (pour la sécurité avec aspects) -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-aop</artifactId>
-        </dependency>
-        
-        <!-- Spring Security Crypto (pour crypter les mots de passe avec BCrypt) -->
-        <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-crypto</artifactId>
-        </dependency>
-        
         <!-- SpringDoc OpenAPI (Swagger pour documenter l'API) -->
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-            <version>2.6.0</version>
+            <version>2.7.0</version>
         </dependency>
         
         <!-- Liquibase (pour gérer les migrations de base de données) -->
         <dependency>
             <groupId>org.liquibase</groupId>
             <artifactId>liquibase-core</artifactId>
+        </dependency>
+        
+        <!-- Spring Security (pour la sécurité de l'API) -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+        
+        <!-- Spring Security Test (pour tester la sécurité) -->
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-test</artifactId>
+            <scope>test</scope>
         </dependency>
         
         <!-- Spring Boot Test (pour les tests) -->
@@ -218,7 +219,7 @@
                     <!-- Vérifie la couverture minimale (60%) -->
                     <execution>
                         <id>check</id>
-                        <phase>none</phase>
+                        <phase>verify</phase>
                         <goals>
                             <goal>check</goal>
                         </goals>

@@ -4,8 +4,6 @@ import com.supplychainx.approvisionnement.dto.RawMaterialCreateDTO;
 import com.supplychainx.approvisionnement.dto.RawMaterialResponseDTO;
 import com.supplychainx.approvisionnement.dto.RawMaterialUpdateDTO;
 import com.supplychainx.approvisionnement.service.RawMaterialService;
-import com.supplychainx.common.enums.UserRole;
-import com.supplychainx.security.RequiresRole;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -25,7 +23,6 @@ public class RawMaterialController {
     private final RawMaterialService rawMaterialService;
 
     @PostMapping
-    @RequiresRole(UserRole.GESTIONNAIRE_APPROVISIONNEMENT)
     @Operation(summary = "Créer une matière première", description = "Ajoute une nouvelle matière première (US8)")
     public ResponseEntity<RawMaterialResponseDTO> createRawMaterial(@Valid @RequestBody RawMaterialCreateDTO dto) {
         RawMaterialResponseDTO created = rawMaterialService.createRawMaterial(dto);
@@ -33,7 +30,6 @@ public class RawMaterialController {
     }
 
     @PutMapping("/{id}")
-    @RequiresRole(UserRole.GESTIONNAIRE_APPROVISIONNEMENT)
     @Operation(summary = "Modifier une matière première", description = "Met à jour une matière première existante (US9)")
     public ResponseEntity<RawMaterialResponseDTO> updateRawMaterial(
             @PathVariable Long id,
@@ -42,7 +38,6 @@ public class RawMaterialController {
         return ResponseEntity.ok(updated);
     }
     @DeleteMapping("/{id}")
-    @RequiresRole(UserRole.GESTIONNAIRE_APPROVISIONNEMENT)
     @Operation(summary = "Supprimer une matière première", 
                description = "Supprime une matière première si elle n'est pas utilisée (US10)")
     public ResponseEntity<Void> deleteRawMaterial(@PathVariable Long id) {
@@ -51,7 +46,6 @@ public class RawMaterialController {
     }
 
     @GetMapping
-    @RequiresRole(UserRole.SUPERVISEUR_LOGISTIQUE)
     @Operation(summary = "Liste des matières premières", 
                description = "Consulte la liste de toutes les matières premières (US11)")
     public ResponseEntity<List<RawMaterialResponseDTO>> getAllRawMaterials() {
@@ -60,7 +54,6 @@ public class RawMaterialController {
     }
 
     @GetMapping("/critical")
-    @RequiresRole(UserRole.SUPERVISEUR_LOGISTIQUE)
     @Operation(summary = "Matières en stock critique", 
                description = "Filtre les matières dont le stock < seuil minimum (US12)")
     public ResponseEntity<List<RawMaterialResponseDTO>> getCriticalStockMaterials() {

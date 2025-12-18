@@ -1,10 +1,8 @@
 package com.supplychainx.production.controller;
 
-import com.supplychainx.common.enums.UserRole;
 import com.supplychainx.production.dto.BillOfMaterialRequestDTO;
 import com.supplychainx.production.dto.BillOfMaterialResponseDTO;
 import com.supplychainx.production.service.BillOfMaterialService;
-import com.supplychainx.security.RequiresRole;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -26,7 +24,6 @@ public class BillOfMaterialController {
 
 
     @PostMapping
-    @RequiresRole(UserRole.CHEF_PRODUCTION)
     @Operation(summary = "Créer une nomenclature", 
                description = "Associer une matière première à un produit fini avec sa quantité nécessaire")
     public ResponseEntity<BillOfMaterialResponseDTO> createBillOfMaterial(
@@ -36,7 +33,6 @@ public class BillOfMaterialController {
     }
 
     @PutMapping("/{id}")
-    @RequiresRole(UserRole.CHEF_PRODUCTION)
     @Operation(summary = "Modifier une nomenclature", 
                description = "Modifier la quantité ou les associations d'une nomenclature existante")
     public ResponseEntity<BillOfMaterialResponseDTO> updateBillOfMaterial(
@@ -47,7 +43,6 @@ public class BillOfMaterialController {
     }
 
     @DeleteMapping("/{id}")
-    @RequiresRole(UserRole.CHEF_PRODUCTION)
     @Operation(summary = "Supprimer une nomenclature", 
                description = "Retirer une matière première de la nomenclature d'un produit")
     public ResponseEntity<Void> deleteBillOfMaterial(@PathVariable Long id) {
@@ -56,7 +51,6 @@ public class BillOfMaterialController {
     }
 
     @GetMapping
-    @RequiresRole({UserRole.PLANIFICATEUR, UserRole.SUPERVISEUR_PRODUCTION})
     @Operation(summary = "Consulter toutes les nomenclatures", 
                description = "Liste complète de toutes les associations produits/matières")
     public ResponseEntity<List<BillOfMaterialResponseDTO>> getAllBillOfMaterials() {
@@ -64,7 +58,6 @@ public class BillOfMaterialController {
         return ResponseEntity.ok(boms);
     }
     @GetMapping("/product/{productId}")
-    @RequiresRole({UserRole.PLANIFICATEUR, UserRole.SUPERVISEUR_PRODUCTION})
     @Operation(summary = "Consulter la BOM d'un produit", 
                description = "US28 Support: Liste des matières premières nécessaires pour fabriquer un produit")
     public ResponseEntity<List<BillOfMaterialResponseDTO>> getBillOfMaterialsByProduct(

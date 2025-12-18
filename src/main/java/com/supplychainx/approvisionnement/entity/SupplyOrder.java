@@ -25,13 +25,8 @@ public class SupplyOrder {
     @JoinColumn(name = "supplier_id", nullable = false)
     private Supplier supplier;
     
-    @ManyToMany
-    @JoinTable(
-        name = "supply_order_materials",
-        joinColumns = @JoinColumn(name = "supply_order_id"),
-        inverseJoinColumns = @JoinColumn(name = "raw_material_id")
-    )
-    private List<RawMaterial> materials = new ArrayList<>();
+    @OneToMany(mappedBy = "supplyOrder", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<SupplyOrderMaterial> orderMaterials = new ArrayList<>();
     
     @Column(nullable = false)
     private LocalDate orderDate;

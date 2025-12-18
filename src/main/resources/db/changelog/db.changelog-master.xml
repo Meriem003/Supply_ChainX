@@ -8,7 +8,10 @@
     <!-- Version 1.0 - Schéma Initial -->
     <include file="db/changelog/changes/v1.0-initial-schema.xml"/>
     
-    <!-- Version 1.1 - Données de test (optionnel) -->
-    <!-- <include file="db/changelog/changes/v1.1-sample-data.xml"/> -->
+    <!-- Version 1.1 - Fix supply_order_materials table -->
+    <include file="db/changelog/changes/v1.1-fix-supply-order-materials.xml"/>
+    
+    <!-- Version 1.2 - Données de test (optionnel) -->
+    <!-- <include file="db/changelog/changes/v1.2-sample-data.xml"/> -->
 
 </databaseChangeLog>

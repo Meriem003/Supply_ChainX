@@ -1,11 +1,9 @@
 package com.supplychainx.production.controller;
 
-import com.supplychainx.common.enums.UserRole;
 import com.supplychainx.production.dto.ProductionOrderCreateDTO;
 import com.supplychainx.production.dto.ProductionOrderResponseDTO;
 import com.supplychainx.production.dto.ProductionOrderUpdateDTO;
 import com.supplychainx.production.service.ProductionOrderService;
-import com.supplychainx.security.RequiresRole;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -25,7 +23,6 @@ public class ProductionOrderController {
     private final ProductionOrderService productionOrderService;
 
     @PostMapping
-    @RequiresRole(UserRole.CHEF_PRODUCTION)
     @Operation(summary = "Créer un ordre de production", 
                description = "Permet au chef de production de créer un nouvel ordre")
     public ResponseEntity<ProductionOrderResponseDTO> createProductionOrder(@Valid @RequestBody ProductionOrderCreateDTO dto) {
@@ -34,7 +31,6 @@ public class ProductionOrderController {
     }
 
     @PutMapping("/{id}")
-    @RequiresRole(UserRole.CHEF_PRODUCTION)
     @Operation(summary = "Modifier un ordre de production", 
                description = "Permet au chef de production de modifier un ordre existant")
     public ResponseEntity<ProductionOrderResponseDTO> updateProductionOrder(
@@ -45,7 +41,6 @@ public class ProductionOrderController {
     }
 
     @DeleteMapping("/{id}")
-    @RequiresRole(UserRole.CHEF_PRODUCTION)
     @Operation(summary = "Annuler un ordre de production", 
                description = "Permet au chef de production d'annuler un ordre non commencé")
     public ResponseEntity<Void> cancelProductionOrder(@PathVariable Long id) {
@@ -54,7 +49,6 @@ public class ProductionOrderController {
     }
 
     @GetMapping
-    @RequiresRole(UserRole.SUPERVISEUR_PRODUCTION)
     @Operation(summary = "Consulter tous les ordres", 
                description = "Permet au superviseur production de consulter tous les ordres")
     public ResponseEntity<List<ProductionOrderResponseDTO>> getAllProductionOrders() {
@@ -63,7 +57,6 @@ public class ProductionOrderController {
     }
 
     @GetMapping("/status/{status}")
-    @RequiresRole(UserRole.SUPERVISEUR_PRODUCTION)
     @Operation(summary = "Filtrer les ordres par statut", 
                description = "Permet au superviseur production de suivre les ordres selon leur statut (EN_ATTENTE, EN_PRODUCTION, TERMINE, BLOQUE)")
     public ResponseEntity<List<ProductionOrderResponseDTO>> getProductionOrdersByStatus(@PathVariable String status) {
@@ -72,7 +65,6 @@ public class ProductionOrderController {
     }
 
     @GetMapping("/{id}")
-    @RequiresRole(UserRole.SUPERVISEUR_PRODUCTION)
     @Operation(summary = "Récupérer un ordre de production par ID", 
                description = "Permet de récupérer les détails d'un ordre de production spécifique")
     public ResponseEntity<ProductionOrderResponseDTO> getProductionOrderById(@PathVariable Long id) {

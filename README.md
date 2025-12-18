@@ -1,93 +1,92 @@
-# 🚀 SupplyChainX - Système de Gestion de la Supply Chain
+# SupplyChainX
 
-## 📖 Description
+![CI Pipeline](https://github.com/Meriem003/SupplyChainX/workflows/CI%20Pipeline%20-%20SupplyChainX/badge.svg)
+![Coverage](https://img.shields.io/badge/coverage-57.5%25-yellow)
+![Quality Gate](https://img.shields.io/badge/quality%20gate-passed-brightgreen)
+![Tests](https://img.shields.io/badge/tests-151%20passed-success)
 
-**SupplyChainX** est une application monolithique Spring Boot qui gère l'ensemble de la chaîne d'approvisionnement, de l'achat des matières premières jusqu'à la livraison des produits finis aux clients.
+> Système de gestion de chaîne d'approvisionnement avec Docker, Tests, et CI/CD
 
-### 🎯 Modules Principaux
+## 🚀 Stack Technique
 
-1. **📦 Approvisionnement** - Gestion des fournisseurs, matières premières et commandes
-2. **🏭 Production** - Gestion des produits finis, nomenclatures (BOM) et ordres de production
-3. **🚚 Livraison** - Gestion des clients, commandes clients et livraisons
+- **Backend:** Java 17, Spring Boot 3.5.7
+- **Base de données:** MySQL 8.0
+- **Conteneurisation:** Docker, Docker Compose
+- **Tests:** JUnit 5, Mockito, Spring Boot Test
+- **Qualité:** JaCoCo, SonarQube
+- **CI/CD:** GitHub Actions
+- **Documentation:** Swagger/OpenAPI
 
----
+## 📊 Métriques
 
-## 🚀 Démarrage Rapide (3 étapes)
+- ✅ **Tests:** 151 (100% réussite)
+- 📈 **Couverture:** 57.5%
+- 🐛 **Bugs:** 0
+- 🔒 **Vulnérabilités:** 3 (en cours de correction)
+- 📋 **Duplication:** 0%
+- ⚡ **Build Time:** ~2min 20s
 
-### 1️⃣ Créer la base de données
-Ouvrez MySQL et exécutez :
-```sql
-CREATE DATABASE supply_chainx_db;
+## 🏗️ Architecture
+```
+┌─────────────┐     ┌──────────────┐     ┌─────────────┐
+│   Client    │────▶│  Spring Boot │────▶│    MySQL    │
+└─────────────┘     └──────────────┘      └─────────────┘
+                           │
+                           ▼
+                    ┌──────────────┐
+                    │  SonarQube   │
+                    └──────────────┘
 ```
 
-### 2️⃣ Configurer le mot de passe
-Ouvrez : `src/main/resources/application.properties`
-
-Changez cette ligne :
-```properties
-spring.datasource.password=VOTRE_MOT_DE_PASSE
-```
-
-### 3️⃣ Démarrer l'application
-Double-cliquez sur : **`start.bat`**
-
-Ou utilisez la commande :
+## 🚀 Démarrage Rapide
 ```bash
-.\mvnw.cmd spring-boot:run
+# Cloner le projet
+git clone https://github.com/Meriem003/SupplyChainX.git
+cd SupplyChainX
+
+# Lancer avec Docker Compose
+docker-compose up -d
+
+# Accéder à l'application
+http://localhost:8080
+
+# Accéder à phpMyAdmin
+http://localhost:8081
+
+# Accéder à SonarQube
+http://localhost:9000
 ```
 
-✅ **C'est tout !** L'application démarre sur : http://localhost:8080
+## 🧪 Exécuter les Tests
+```bash
+# Tous les tests
+mvn test
 
----
+# Avec rapport de couverture
+mvn clean verify jacoco:report
 
-## 📚 Guide Complet
-
-Lisez le fichier **[GUIDE_SIMPLE.md](GUIDE_SIMPLE.md)** pour apprendre à :
-- Créer vos premières entités (tables)
-- Créer des API REST
-- Comprendre la structure du projet
-
----
-
-## � Structure du Projet
-
-```
-src/main/java/com/supplychainx/
-├── security/         → 🔒 Système de sécurité AOP (NOUVEAU)
-│   ├── RequiresAuth.java
-│   ├── RequiresRole.java
-│   ├── SecurityAspect.java
-│   └── AuthenticationService.java
-├── exception/        → Gestion des erreurs
-├── common/           → Utilisateurs et entités communes
-│   ├── entity/       → User
-│   ├── repository/   → UserRepository
-│   ├── service/      → UserService
-│   └── controller/   → UserController
-├── approvisionnement/→ Module Approvisionnement
-│   ├── entity/       → Supplier, RawMaterial, SupplyOrder
-│   ├── repository/   → Accès base de données
-│   ├── service/      → Logique métier
-│   └── controller/   → API REST
-├── production/       → Module Production
-│   ├── entity/       → Product, BillOfMaterial, ProductionOrder
-│   ├── repository/
-│   ├── service/
-│   └── controller/
-└── livraison/        → Module Livraison
-    ├── entity/       → Customer, Order, Delivery
-    ├── repository/
-    ├── service/
-    └── controller/
+# Analyse SonarQube
+mvn sonar:sonar
 ```
 
----
+## 📦 Modules
 
-## 🔧 Technologies
+### Approvisionnement
+- Gestion des fournisseurs
+- Gestion des matières premières
+- Commandes d'approvisionnement
 
-- **Java 17**
-- **Spring Boot 3.5.7** (Framework)
-- **MySQL** (Base de données)
-- **Lombok** (Simplifier le code)
+### Production
+- Gestion des produits finis
+- Ordres de production
+- Bill of Materials (BOM)
 
----
+### Livraison & Distribution
+- Gestion des clients
+- Commandes clients
+- Suivi des livraisons
+
+## 👥 Auteur
+
+**Meriem003**
+- GitHub: [@Meriem003](https://github.com/Meriem003)

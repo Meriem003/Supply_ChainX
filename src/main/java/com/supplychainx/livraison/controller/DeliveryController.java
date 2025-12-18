@@ -1,10 +1,8 @@
 package com.supplychainx.livraison.controller;
 
-import com.supplychainx.common.enums.UserRole;
 import com.supplychainx.livraison.dto.DeliveryRequestDTO;
 import com.supplychainx.livraison.dto.DeliveryResponseDTO;
 import com.supplychainx.livraison.service.DeliveryService;
-import com.supplychainx.security.RequiresRole;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -26,7 +24,6 @@ public class DeliveryController {
     
 
     @PostMapping
-    @RequiresRole(UserRole.RESPONSABLE_LOGISTIQUE)
     @Operation(summary = "Créer une livraison",
             description = "Permet de créer une livraison pour une commande avec calcul automatique du coût total")
     public ResponseEntity<DeliveryResponseDTO> createDelivery(@Valid @RequestBody DeliveryRequestDTO dto) {
@@ -35,7 +32,6 @@ public class DeliveryController {
     }
     
     @GetMapping("/{id}")
-    @RequiresRole(UserRole.RESPONSABLE_LOGISTIQUE)
     @Operation(summary = "Obtenir une livraison par ID",
             description = "Récupère les détails d'une livraison spécifique")
     public ResponseEntity<DeliveryResponseDTO> getDeliveryById(@PathVariable Long id) {
@@ -44,7 +40,6 @@ public class DeliveryController {
     }
     
     @GetMapping
-    @RequiresRole(UserRole.RESPONSABLE_LOGISTIQUE)
     @Operation(summary = "Obtenir les livraisons par statut",
             description = "Récupère toutes les livraisons filtrées par statut")
     public ResponseEntity<List<DeliveryResponseDTO>> getDeliveriesByStatus(@RequestParam String status) {
@@ -53,7 +48,6 @@ public class DeliveryController {
     }
     
     @PutMapping("/{id}/status")
-    @RequiresRole(UserRole.RESPONSABLE_LOGISTIQUE)
     @Operation(summary = "Mettre à jour le statut d'une livraison",
             description = "Change le statut d'une livraison et met à jour la commande si nécessaire")
     public ResponseEntity<DeliveryResponseDTO> updateDeliveryStatus(
@@ -65,7 +59,6 @@ public class DeliveryController {
     }
     
     @PostMapping("/{id}/calculate-cost")
-    @RequiresRole(UserRole.RESPONSABLE_LOGISTIQUE)
     @Operation(summary = "Calculer et mettre à jour le coût de livraison",
             description = "Calcule le coût de livraison basé sur la distance et le tarif")
     public ResponseEntity<DeliveryResponseDTO> calculateDeliveryCost(

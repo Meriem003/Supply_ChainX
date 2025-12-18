@@ -5,7 +5,6 @@ import com.supplychainx.common.dto.UserCreateDTO;
 import com.supplychainx.common.dto.UserResponseDTO;
 import com.supplychainx.common.enums.UserRole;
 import com.supplychainx.common.service.UserService;
-import com.supplychainx.security.RequiresRole;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -25,7 +24,6 @@ public class UserController {
 
 
     @PostMapping
-    @RequiresRole(UserRole.ADMIN)
     @Operation(summary = "Créer un utilisateur", description = "Permet à un admin de créer un nouveau compte utilisateur avec un rôle spécifique")
     public ResponseEntity<UserResponseDTO> createUser(@Valid @RequestBody UserCreateDTO dto) {
         UserResponseDTO user = userService.createUser(dto);
@@ -33,7 +31,6 @@ public class UserController {
     }
 
     @PutMapping("/{userId}/role")
-    @RequiresRole(UserRole.ADMIN)
     @Operation(summary = "Modifier le rôle d'un utilisateur", description = "Permet à un admin de modifier le rôle d'un utilisateur existant")
     public ResponseEntity<UserResponseDTO> updateUserRole(
             @PathVariable Long userId,
