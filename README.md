@@ -24,7 +24,6 @@
 - 🐛 **Bugs:** 0
 - 🔒 **Vulnérabilités:** 3 (en cours de correction)
 - 📋 **Duplication:** 0%
-- ⚡ **Build Time:** ~2min 20s
 
 ## 🏗️ Architecture
 ```
