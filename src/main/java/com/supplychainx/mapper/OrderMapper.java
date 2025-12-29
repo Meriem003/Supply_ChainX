@@ -3,12 +3,15 @@ package com.supplychainx.mapper;
 import com.supplychainx.livraison.dto.OrderRequestDTO;
 import com.supplychainx.livraison.dto.OrderResponseDTO;
 import com.supplychainx.livraison.entity.Order;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
+import org.mapstruct.*;
 
 
-@Mapper(componentModel = "spring", uses = {CustomerMapper.class, ProductMapper.class})
+@Mapper(
+    componentModel = "spring",
+    uses = {CustomerMapper.class, ProductMapper.class},
+    nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
+    unmappedTargetPolicy = ReportingPolicy.IGNORE
+)
 public interface OrderMapper {
 
     @Mapping(target = "customer", ignore = true)

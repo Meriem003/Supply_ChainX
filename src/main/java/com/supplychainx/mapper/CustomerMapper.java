@@ -3,11 +3,14 @@ package com.supplychainx.mapper;
 import com.supplychainx.livraison.dto.CustomerRequestDTO;
 import com.supplychainx.livraison.dto.CustomerResponseDTO;
 import com.supplychainx.livraison.entity.Customer;
-import org.mapstruct.Mapper;
-import org.mapstruct.MappingTarget;
+import org.mapstruct.*;
 
 
-@Mapper(componentModel = "spring")
+@Mapper(
+    componentModel = "spring",
+    nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
+    unmappedTargetPolicy = ReportingPolicy.IGNORE
+)
 public interface CustomerMapper {
 
     Customer toEntity(CustomerRequestDTO dto);

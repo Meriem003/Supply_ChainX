@@ -3,12 +3,15 @@ package com.supplychainx.mapper;
 import com.supplychainx.production.dto.BillOfMaterialRequestDTO;
 import com.supplychainx.production.dto.BillOfMaterialResponseDTO;
 import com.supplychainx.production.entity.BillOfMaterial;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
+import org.mapstruct.*;
 
 
-@Mapper(componentModel = "spring", uses = {ProductMapper.class, RawMaterialMapper.class})
+@Mapper(
+    componentModel = "spring",
+    uses = {ProductMapper.class, RawMaterialMapper.class},
+    nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
+    unmappedTargetPolicy = ReportingPolicy.IGNORE
+)
 public interface BillOfMaterialMapper {
 
     @Mapping(target = "product", ignore = true)

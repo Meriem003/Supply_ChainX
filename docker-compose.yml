@@ -84,6 +84,57 @@ services:
       retries: 5
       start_period: 60s
 
+  # Elasticsearch (Centralisation des logs)
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.11.0
+    container_name: supplychainx-elasticsearch
+    restart: unless-stopped
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - bootstrap.memory_lock=true
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data
+    networks:
+      - supplychainx-network
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:9200/_cluster/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+
+  # Kibana (Visualisation et analyse des logs)
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.11.0
+    container_name: supplychainx-kibana
+    restart: unless-stopped
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+      - SERVER_NAME=kibana
+      - SERVER_HOST=0.0.0.0
+    ports:
+      - "5601:5601"
+    networks:
+      - supplychainx-network
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:5601/api/status || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+
 volumes:
   mysql_data:
     driver: local
@@ -92,6 +143,8 @@ volumes:
   sonarqube_extensions:
     driver: local
   sonarqube_logs:
+    driver: local
+  elasticsearch_data:
     driver: local
 
 networks:

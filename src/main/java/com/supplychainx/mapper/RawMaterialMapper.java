@@ -3,12 +3,14 @@ package com.supplychainx.mapper;
 import com.supplychainx.approvisionnement.dto.RawMaterialRequestDTO;
 import com.supplychainx.approvisionnement.dto.RawMaterialResponseDTO;
 import com.supplychainx.approvisionnement.entity.RawMaterial;
-import org.mapstruct.AfterMapping;
-import org.mapstruct.Mapper;
-import org.mapstruct.MappingTarget;
+import org.mapstruct.*;
 
 
-@Mapper(componentModel = "spring")
+@Mapper(
+    componentModel = "spring",
+    nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
+    unmappedTargetPolicy = ReportingPolicy.IGNORE
+)
 public interface RawMaterialMapper {
 
     RawMaterial toEntity(RawMaterialRequestDTO dto);

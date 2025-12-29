@@ -29,7 +29,7 @@ public class UserService {
         user.setFirstName(dto.getFirstName());
         user.setLastName(dto.getLastName());
         user.setEmail(dto.getEmail());
-        user.setPassword(dto.getPassword()); // ⚠️ Mot de passe stocké en clair (NON SÉCURISÉ)
+        user.setPassword(dto.getPassword());
         user.setRole(dto.getRole());
 
         user = userRepository.save(user);

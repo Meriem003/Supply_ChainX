@@ -3,10 +3,13 @@ package com.supplychainx.mapper;
 import com.supplychainx.approvisionnement.dto.SupplierRequestDTO;
 import com.supplychainx.approvisionnement.dto.SupplierResponseDTO;
 import com.supplychainx.approvisionnement.entity.Supplier;
-import org.mapstruct.Mapper;
-import org.mapstruct.MappingTarget;
+import org.mapstruct.*;
 
-@Mapper(componentModel = "spring")
+@Mapper(
+    componentModel = "spring",
+    nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
+    unmappedTargetPolicy = ReportingPolicy.IGNORE
+)
 public interface SupplierMapper {
 
 

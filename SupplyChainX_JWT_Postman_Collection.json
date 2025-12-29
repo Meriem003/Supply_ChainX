@@ -1,0 +1,306 @@
+{
+	"info": {
+		"_postman_id": "supplychainx-jwt-auth",
+		"name": "SupplyChainX - JWT Authentication",
+		"description": "Complete JWT authentication testing collection for SupplyChainX",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8080",
+			"type": "string"
+		},
+		{
+			"key": "accessToken",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "refreshToken",
+			"value": "",
+			"type": "string"
+		}
+	],
+	"item": [
+		{
+			"name": "1. Authentication",
+			"item": [
+				{
+					"name": "Login as Admin",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    pm.collectionVariables.set('accessToken', response.accessToken);",
+									"    pm.collectionVariables.set('refreshToken', response.refreshToken);",
+									"    pm.environment.set('accessToken', response.accessToken);",
+									"    pm.environment.set('refreshToken', response.refreshToken);",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"admin@supplychainx.com\",\n  \"password\": \"password123\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/login",
+							"host": ["{{baseUrl}}"],
+							"path": ["auth", "login"]
+						}
+					}
+				},
+				{
+					"name": "Login as Gestionnaire",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    pm.collectionVariables.set('accessToken', response.accessToken);",
+									"    pm.collectionVariables.set('refreshToken', response.refreshToken);",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"gestionnaire@supplychainx.com\",\n  \"password\": \"password123\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/login",
+							"host": ["{{baseUrl}}"],
+							"path": ["auth", "login"]
+						}
+					}
+				},
+				{
+					"name": "Login as Responsable",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    pm.collectionVariables.set('accessToken', response.accessToken);",
+									"    pm.collectionVariables.set('refreshToken', response.refreshToken);",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"responsable@supplychainx.com\",\n  \"password\": \"password123\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/login",
+							"host": ["{{baseUrl}}"],
+							"path": ["auth", "login"]
+						}
+					}
+				},
+				{
+					"name": "Login - Invalid Credentials",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"admin@supplychainx.com\",\n  \"password\": \"wrongpassword\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/login",
+							"host": ["{{baseUrl}}"],
+							"path": ["auth", "login"]
+						}
+					}
+				},
+				{
+					"name": "Refresh Token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    pm.collectionVariables.set('accessToken', response.accessToken);",
+									"    pm.collectionVariables.set('refreshToken', response.refreshToken);",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/refresh",
+							"host": ["{{baseUrl}}"],
+							"path": ["auth", "refresh"]
+						}
+					}
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/logout",
+							"host": ["{{baseUrl}}"],
+							"path": ["auth", "logout"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "2. Protected Endpoints",
+			"item": [
+				{
+					"name": "Get User Info (Any Auth User)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/example/user-info",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "example", "user-info"]
+						}
+					}
+				},
+				{
+					"name": "Admin Endpoint (ADMIN only)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/example/admin",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "example", "admin"]
+						}
+					}
+				},
+				{
+					"name": "Approvisionnement Endpoint",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/example/approvisionnement",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "example", "approvisionnement"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "3. Error Cases",
+			"item": [
+				{
+					"name": "Access Protected Without Token",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/example/user-info",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "example", "user-info"]
+						}
+					}
+				},
+				{
+					"name": "Access Protected With Invalid Token",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer invalid.token.here"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/example/user-info",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "example", "user-info"]
+						}
+					}
+				}
+			]
+		}
+	]
+}

@@ -11,7 +11,10 @@
     <!-- Version 1.1 - Fix supply_order_materials table -->
     <include file="db/changelog/changes/v1.1-fix-supply-order-materials.xml"/>
     
-    <!-- Version 1.2 - Données de test (optionnel) -->
-    <!-- <include file="db/changelog/changes/v1.2-sample-data.xml"/> -->
+    <!-- Version 1.3 - Refresh Tokens table -->
+    <include file="db/changelog/changes/v1.3-refresh-tokens.xml"/>
+    
+    <!-- Version 1.4 - Données de test (optionnel) -->
+    <!-- <include file="db/changelog/changes/v1.4-sample-data.xml"/> -->
 
 </databaseChangeLog>

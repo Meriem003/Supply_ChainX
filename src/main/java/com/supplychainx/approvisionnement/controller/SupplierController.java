@@ -14,10 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-/**
- * Controller REST pour gérer les fournisseurs
- * Implémente les US3, US4, US5, US6, US7
- */
+
 @RestController
 @RequestMapping("/api/suppliers")
 @RequiredArgsConstructor
@@ -26,10 +23,6 @@ public class SupplierController {
 
     private final SupplierService supplierService;
 
-    /**
-     * US3: Ajouter un fournisseur avec toutes ses informations
-     * Accessible uniquement au GESTIONNAIRE_APPROVISIONNEMENT
-     */
     @PostMapping
     @Operation(summary = "Créer un fournisseur", description = "Ajoute un nouveau fournisseur (US3)")
     public ResponseEntity<SupplierResponseDTO> createSupplier(@Valid @RequestBody SupplierCreateDTO dto) {
@@ -37,10 +30,6 @@ public class SupplierController {
         return new ResponseEntity<>(created, HttpStatus.CREATED);
     }
 
-    /**
-     * US4: Modifier un fournisseur existant
-     * Accessible uniquement au GESTIONNAIRE_APPROVISIONNEMENT
-     */
     @PutMapping("/{id}")
     @Operation(summary = "Modifier un fournisseur", description = "Met à jour un fournisseur existant (US4)")
     public ResponseEntity<SupplierResponseDTO> updateSupplier(
@@ -50,10 +39,7 @@ public class SupplierController {
         return ResponseEntity.ok(updated);
     }
 
-    /**
-     * US5: Supprimer un fournisseur (s'il n'a aucune commande active)
-     * Accessible uniquement au GESTIONNAIRE_APPROVISIONNEMENT
-     */
+
     @DeleteMapping("/{id}")
     @Operation(summary = "Supprimer un fournisseur", 
                description = "Supprime un fournisseur s'il n'a aucune commande active (US5)")
@@ -70,10 +56,6 @@ public class SupplierController {
         return ResponseEntity.ok(supplier);
     }
 
-    /**
-     * US6: Consulter la liste de tous les fournisseurs
-     * Accessible au SUPERVISEUR_LOGISTIQUE
-     */
     @GetMapping
     @Operation(summary = "Liste des fournisseurs", description = "Consulte la liste de tous les fournisseurs (US6)")
     public ResponseEntity<List<SupplierResponseDTO>> getAllSuppliers() {
@@ -81,10 +63,6 @@ public class SupplierController {
         return ResponseEntity.ok(suppliers);
     }
 
-    /**
-     * US7: Rechercher un fournisseur par nom
-     * Accessible au RESPONSABLE_ACHATS
-     */
     @GetMapping("/search")
     @Operation(summary = "Rechercher un fournisseur", 
                description = "Recherche un fournisseur par nom (recherche partielle) (US7)")

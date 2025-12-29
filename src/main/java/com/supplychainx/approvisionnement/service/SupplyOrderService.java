@@ -44,7 +44,6 @@ public class SupplyOrderService {
         order.setOrderDate(dto.getOrderDate());
         order.setStatus(SupplyOrderStatus.valueOf(dto.getStatus()));
 
-        // Créer les SupplyOrderMaterial avec les quantités
         for (MaterialQuantityDTO materialDto : dto.getMaterials()) {
             RawMaterial material = rawMaterialRepository.findById(materialDto.getMaterialId())
                     .orElseThrow(() -> new ResourceNotFoundException(
@@ -76,7 +75,6 @@ public class SupplyOrderService {
         order.setOrderDate(dto.getOrderDate());
         order.setStatus(SupplyOrderStatus.valueOf(dto.getStatus()));
         
-        // Supprimer les anciens matériaux et ajouter les nouveaux avec quantités
         order.getOrderMaterials().clear();
         
         for (MaterialQuantityDTO materialDto : dto.getMaterials()) {

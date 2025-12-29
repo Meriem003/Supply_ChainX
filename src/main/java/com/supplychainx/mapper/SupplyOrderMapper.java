@@ -5,14 +5,17 @@ import com.supplychainx.approvisionnement.dto.SupplyOrderRequestDTO;
 import com.supplychainx.approvisionnement.dto.SupplyOrderResponseDTO;
 import com.supplychainx.approvisionnement.entity.SupplyOrder;
 import com.supplychainx.approvisionnement.entity.SupplyOrderMaterial;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
+import org.mapstruct.*;
 
 import java.util.List;
 
 
-@Mapper(componentModel = "spring", uses = {SupplierMapper.class, RawMaterialMapper.class})
+@Mapper(
+    componentModel = "spring",
+    uses = {SupplierMapper.class, RawMaterialMapper.class},
+    nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
+    unmappedTargetPolicy = ReportingPolicy.IGNORE
+)
 public interface SupplyOrderMapper {
 
     @Mapping(target = "supplier", ignore = true)
