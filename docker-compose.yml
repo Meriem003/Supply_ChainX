@@ -32,14 +32,19 @@ services:
     depends_on:
       mysql:
         condition: service_healthy
+      logstash:
+        condition: service_healthy
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/supply_chainx_db?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: root
       SPRING_JPA_HIBERNATE_DDL_AUTO: validate
       SPRING_LIQUIBASE_ENABLED: 'true'
+      SPRING_PROFILES_ACTIVE: docker
     ports:
       - "8080:8080"
+    volumes:
+      - ./logs:/logs
     networks:
       - supplychainx-network
   phpmyadmin:
@@ -107,6 +112,30 @@ services:
       - supplychainx-network
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:9200/_cluster/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+
+  # Logstash (Pipeline de traitement des logs)
+  logstash:
+    image: docker.elastic.co/logstash/logstash:8.11.0
+    container_name: supplychainx-logstash
+    restart: unless-stopped
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    volumes:
+      - ./logstash.conf:/usr/share/logstash/pipeline/logstash.conf:ro
+      - ./logs:/usr/share/logs:ro
+    ports:
+      - "5000:5000"
+    networks:
+      - supplychainx-network
+    environment:
+      - "LS_JAVA_OPTS=-Xmx256m -Xms256m"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:9600/_node/stats || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 5

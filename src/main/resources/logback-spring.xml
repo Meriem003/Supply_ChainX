@@ -36,19 +36,24 @@
         </encoder>
     </appender>
 
-    <!-- Appender HTTP vers Elasticsearch (envoi direct) -->
-    <appender name="ELASTIC" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+    <!-- Appender Logstash TCP (envoi vers Logstash qui transmet à Elasticsearch) -->
+    <appender name="LOGSTASH" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
         <destination>localhost:5000</destination>
         <encoder class="net.logstash.logback.encoder.LogstashEncoder">
             <includeMdcKeyName>user_id</includeMdcKeyName>
+            <includeMdcKeyName>user_email</includeMdcKeyName>
             <includeMdcKeyName>user_role</includeMdcKeyName>
             <includeMdcKeyName>business_id</includeMdcKeyName>
             <includeMdcKeyName>endpoint</includeMdcKeyName>
+            <includeMdcKeyName>http_method</includeMdcKeyName>
             <includeMdcKeyName>http_status</includeMdcKeyName>
             <includeMdcKeyName>log_type</includeMdcKeyName>
+            <includeMdcKeyName>action</includeMdcKeyName>
+            <includeMdcKeyName>entity_type</includeMdcKeyName>
+            <includeMdcKeyName>entity_id</includeMdcKeyName>
             <customFields>{"application":"${appName}","environment":"${environment}"}</customFields>
         </encoder>
-        <!-- Ne pas bloquer l'application si Elasticsearch est down -->
+        <!-- Ne pas bloquer l'application si Logstash/Elasticsearch est down -->
         <keepAliveDuration>5 minutes</keepAliveDuration>
         <reconnectionDelay>10 seconds</reconnectionDelay>
     </appender>
@@ -60,10 +65,20 @@
     <logger name="org.springframework.security" level="INFO"/>
     <logger name="org.hibernate.SQL" level="DEBUG"/>
 
-    <!-- Logger root -->
-    <root level="INFO">
-        <appender-ref ref="CONSOLE"/>
-        <appender-ref ref="FILE_JSON"/>
-    </root>
+    <!-- Logger root - Active LOGSTASH pour Docker, CONSOLE + FILE_JSON pour dev local -->
+    <springProfile name="docker">
+        <root level="INFO">
+            <appender-ref ref="CONSOLE"/>
+            <appender-ref ref="FILE_JSON"/>
+            <appender-ref ref="LOGSTASH"/>
+        </root>
+    </springProfile>
+    
+    <springProfile name="!docker">
+        <root level="INFO">
+            <appender-ref ref="CONSOLE"/>
+            <appender-ref ref="FILE_JSON"/>
+        </root>
+    </springProfile>
 </configuration>
 

@@ -1,5 +1,6 @@
 package com.supplychainx.common.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.supplychainx.common.enums.UserRole;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -26,6 +27,7 @@ public class User {
     @Column(nullable = false, unique = true)
     private String email;
     
+    @JsonIgnore // Ne jamais exposer le mot de passe dans les réponses JSON
     @Column(nullable = false)
     private String password;
     

@@ -1,0 +1,834 @@
+{
+	"info": {
+		"_postman_id": "a1b2c3d4-e5f6-7890-abcd-1234567890ab",
+		"name": "SupplyChainX - Complete API Tests",
+		"description": "Collection complète pour tester l'API SupplyChainX avec authentification JWT, gestion des tokens, et tests de tous les endpoints protégés par rôles.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{accessToken}}",
+				"type": "string"
+			}
+		]
+	},
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8080",
+			"type": "string"
+		},
+		{
+			"key": "accessToken",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "refreshToken",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "userId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "userRole",
+			"value": "",
+			"type": "string"
+		}
+	],
+	"item": [
+		{
+			"name": "🔐 Authentication",
+			"item": [
+				{
+					"name": "Login - ADMIN",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response has accessToken\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('accessToken');",
+									"    pm.expect(jsonData).to.have.property('refreshToken');",
+									"});",
+									"",
+									"// Save tokens globally",
+									"var jsonData = pm.response.json();",
+									"pm.collectionVariables.set(\"accessToken\", jsonData.accessToken);",
+									"pm.collectionVariables.set(\"refreshToken\", jsonData.refreshToken);",
+									"pm.collectionVariables.set(\"userId\", jsonData.userId);",
+									"pm.collectionVariables.set(\"userRole\", jsonData.role);",
+									"",
+									"console.log(\"✅ Access Token: \" + jsonData.accessToken.substring(0, 20) + \"...\");",
+									"console.log(\"✅ Refresh Token: \" + jsonData.refreshToken.substring(0, 20) + \"...\");",
+									"console.log(\"✅ User Role: \" + jsonData.role);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"admin@supplychainx.com\",\n  \"password\": \"admin123\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						},
+						"description": "Authentification avec compte ADMIN. Récupère accessToken et refreshToken."
+					},
+					"response": []
+				},
+				{
+					"name": "Login - GESTIONNAIRE_APPROVISIONNEMENT",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var jsonData = pm.response.json();",
+									"pm.collectionVariables.set(\"accessToken\", jsonData.accessToken);",
+									"pm.collectionVariables.set(\"refreshToken\", jsonData.refreshToken);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"gestionnaire@supplychainx.com\",\n  \"password\": \"gestionnaire123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login - Invalid credentials",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 401\", function () {",
+									"    pm.response.to.have.status(401);",
+									"});",
+									"",
+									"pm.test(\"Error message present\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('message');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"wrong@example.com\",\n  \"password\": \"wrongpassword\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Refresh Access Token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"New tokens received\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('accessToken');",
+									"    pm.expect(jsonData).to.have.property('refreshToken');",
+									"    ",
+									"    // Update tokens",
+									"    pm.collectionVariables.set(\"accessToken\", jsonData.accessToken);",
+									"    pm.collectionVariables.set(\"refreshToken\", jsonData.refreshToken);",
+									"    ",
+									"    console.log(\"✅ Tokens refreshed successfully\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/refresh",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"refresh"
+							]
+						},
+						"description": "Rafraîchit l'Access Token en utilisant le Refresh Token. Rotation : ancien Refresh Token révoqué, nouveau généré."
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"// Clear tokens",
+									"pm.collectionVariables.set(\"accessToken\", \"\");",
+									"pm.collectionVariables.set(\"refreshToken\", \"\");",
+									"console.log(\"✅ Logged out successfully\");"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/logout",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"logout"
+							]
+						},
+						"description": "Déconnexion : révoque le Refresh Token en base de données."
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoints d'authentification : login, refresh, logout"
+		},
+		{
+			"name": "📦 Approvisionnement Module",
+			"item": [
+				{
+					"name": "Get All Suppliers",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200 or 403\", function () {",
+									"    pm.expect([200, 403]).to.include(pm.response.code);",
+									"});",
+									"",
+									"if (pm.response.code === 403) {",
+									"    console.log(\"⚠️ 403 Forbidden - Role insuffisant\");",
+									"} else {",
+									"    console.log(\"✅ 200 OK - Accès autorisé\");",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/suppliers",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"suppliers"
+							]
+						},
+						"description": "Accessible par : GESTIONNAIRE_APPROVISIONNEMENT, RESPONSABLE_ACHATS, ADMIN"
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Raw Materials",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200 or 403\", function () {",
+									"    pm.expect([200, 403]).to.include(pm.response.code);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/raw-materials",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"raw-materials"
+							]
+						},
+						"description": "Accessible par : GESTIONNAIRE_APPROVISIONNEMENT, RESPONSABLE_ACHATS, CHEF_PRODUCTION, ADMIN"
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Supply Orders",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200 or 403\", function () {",
+									"    pm.expect([200, 403]).to.include(pm.response.code);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/supply-orders",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"supply-orders"
+							]
+						},
+						"description": "Accessible par : GESTIONNAIRE_APPROVISIONNEMENT, RESPONSABLE_ACHATS, ADMIN"
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoints du module Approvisionnement : fournisseurs, matières premières, commandes fournisseurs"
+		},
+		{
+			"name": "🏭 Production Module",
+			"item": [
+				{
+					"name": "Get All Products",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200 or 403\", function () {",
+									"    pm.expect([200, 403]).to.include(pm.response.code);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/products",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"products"
+							]
+						},
+						"description": "Accessible par : CHEF_PRODUCTION, OPERATEUR_PRODUCTION, ADMIN"
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Production Orders",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200 or 403\", function () {",
+									"    pm.expect([200, 403]).to.include(pm.response.code);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/production-orders",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"production-orders"
+							]
+						},
+						"description": "Accessible par : CHEF_PRODUCTION, OPERATEUR_PRODUCTION, ADMIN"
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Warehouses",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200 or 403\", function () {",
+									"    pm.expect([200, 403]).to.include(pm.response.code);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/warehouses",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"warehouses"
+							]
+						},
+						"description": "Accessible par : CHEF_PRODUCTION, OPERATEUR_PRODUCTION, ADMIN"
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoints du module Production : produits, ordres de production, entrepôts"
+		},
+		{
+			"name": "🚚 Livraison Module",
+			"item": [
+				{
+					"name": "Get All Customers",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200 or 403\", function () {",
+									"    pm.expect([200, 403]).to.include(pm.response.code);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/customers",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"customers"
+							]
+						},
+						"description": "Accessible par : GESTIONNAIRE_LIVRAISON, RESPONSABLE_EXPEDITION, COMMERCIAL, ADMIN"
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Customer Orders",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200 or 403\", function () {",
+									"    pm.expect([200, 403]).to.include(pm.response.code);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/customer-orders",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"customer-orders"
+							]
+						},
+						"description": "Accessible par : GESTIONNAIRE_LIVRAISON, RESPONSABLE_EXPEDITION, COMMERCIAL, ADMIN"
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Shipments",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200 or 403\", function () {",
+									"    pm.expect([200, 403]).to.include(pm.response.code);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/shipments",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"shipments"
+							]
+						},
+						"description": "Accessible par : GESTIONNAIRE_LIVRAISON, RESPONSABLE_EXPEDITION, ADMIN"
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoints du module Livraison : clients, commandes clients, expéditions"
+		},
+		{
+			"name": "❌ Negative Tests",
+			"item": [
+				{
+					"name": "Access without token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 401\", function () {",
+									"    pm.response.to.have.status(401);",
+									"});",
+									"",
+									"pm.test(\"Error response contains message\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('message');",
+									"    pm.expect(jsonData).to.have.property('status');",
+									"    pm.expect(jsonData.status).to.eql(401);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/suppliers",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"suppliers"
+							]
+						},
+						"description": "Tentative d'accès à un endpoint protégé sans token → 401"
+					},
+					"response": []
+				},
+				{
+					"name": "Access with invalid token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 401\", function () {",
+									"    pm.response.to.have.status(401);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "invalid.token.here",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/suppliers",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"suppliers"
+							]
+						},
+						"description": "Tentative d'accès avec un token JWT invalide → 401"
+					},
+					"response": []
+				},
+				{
+					"name": "Refresh with invalid token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 401\", function () {",
+									"    pm.response.to.have.status(401);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"refreshToken\": \"invalid-refresh-token-123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/refresh",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"refresh"
+							]
+						},
+						"description": "Tentative de refresh avec un token invalide → 401"
+					},
+					"response": []
+				}
+			],
+			"description": "Tests négatifs : accès sans token, token invalide, refresh invalide"
+		},
+		{
+			"name": "🏥 Health Check",
+			"item": [
+				{
+					"name": "Health",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response time is less than 500ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(500);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/health",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"health"
+							]
+						},
+						"description": "Endpoint public pour vérifier que l'API est disponible"
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"// Script global exécuté avant chaque requête",
+					"console.log(\"🔹 Request: \" + pm.request.method + \" \" + pm.request.url);",
+					"",
+					"// Vérifier si un token est disponible",
+					"var token = pm.collectionVariables.get(\"accessToken\");",
+					"if (token && token !== \"\") {",
+					"    console.log(\"🔑 Using Access Token: \" + token.substring(0, 20) + \"...\");",
+					"}"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"// Script global exécuté après chaque requête",
+					"console.log(\"📊 Response Status: \" + pm.response.code);",
+					"console.log(\"⏱️ Response Time: \" + pm.response.responseTime + \"ms\");",
+					"",
+					"// Log en cas d'erreur",
+					"if (pm.response.code >= 400) {",
+					"    console.error(\"❌ Error Response:\", pm.response.json());",
+					"}"
+				]
+			}
+		}
+	]
+}
